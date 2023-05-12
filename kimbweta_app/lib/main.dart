@@ -3,6 +3,7 @@ import 'package:kimbweta_app/constants/constants.dart';
 import 'package:kimbweta_app/screens/screen_tabs.dart';
 import 'package:kimbweta_app/screens/sign_in_screen.dart';
 import 'package:kimbweta_app/screens/sign_up_screen.dart';
+import 'package:kimbweta_app/screens/test_api.dart';
 import 'package:kimbweta_app/screens/welcome_screen.dart';
 import 'package:kimbweta_app/screens/whiteboard_screen.dart';
 
@@ -18,18 +19,18 @@ class KimbwetaApp extends StatelessWidget {
     return MaterialApp(
       debugShowCheckedModeBanner: false,
 
-      initialRoute: SignInScreen.id,
       theme: ThemeData(
         primarySwatch: kMainThemeAppColor
       ),
-
-      routes: {
-        SignInScreen.id: (context)=> const SignInScreen(),
-        SignUpScreen.id: (context)=> const SignUpScreen(),
-        ScreenTabs.id: (context)=> const ScreenTabs(),
-        WelcomeScreen.id: (context)=> WelcomeScreen(),
-        WhiteboardScreen.id: (context)=> WhiteboardScreen(),
-      },
+      // initialRoute: SignInScreen.id,
+      // routes: {
+      //   SignInScreen.id: (context)=> const SignInScreen(),
+      //   SignUpScreen.id: (context)=> const SignUpScreen(),
+      //   ScreenTabs.id: (context)=> const ScreenTabs(),
+      //   WelcomeScreen.id: (context)=> WelcomeScreen(),
+      //   WhiteboardScreen.id: (context)=> WhiteboardScreen(),
+      // },
+      home: ApiScreen(),
 
     );
   }

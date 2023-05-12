@@ -1,6 +1,5 @@
 import 'package:flutter/material.dart';
 import 'package:kimbweta_app/constants/constants.dart';
-import 'package:kimbweta_app/screens/discussion_screen.dart';
 import 'package:kimbweta_app/screens/screen_tabs.dart';
 import 'package:kimbweta_app/screens/sign_in_screen.dart';
 import 'package:kimbweta_app/screens/sign_up_screen.dart';
@@ -18,11 +17,7 @@ class KimbwetaApp extends StatelessWidget {
   Widget build(BuildContext context) {
     return MaterialApp(
       debugShowCheckedModeBanner: false,
-      // theme: ThemeData(
-      //   primaryColor: Color(0xFFC41A3B),
-      //   primaryColorLight: Color(0xFF1B1F32),
-      //
-      // ),
+
       initialRoute: SignInScreen.id,
       theme: ThemeData(
         primarySwatch: kMainThemeAppColor

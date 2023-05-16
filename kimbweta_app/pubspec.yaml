@@ -17,6 +17,7 @@ dependencies:
   file_picker: ^5.2.11
   syncfusion_flutter_pdfviewer: ^21.1.41
   flutter_native_splash: ^2.2.19
+  http: ^0.13.6
 
 flutter_native_splash:
   background_image: images/background.png

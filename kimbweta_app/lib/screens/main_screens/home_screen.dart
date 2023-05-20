@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
-import '../constants/constants.dart';
-import 'discussion_screen.dart';
+import '../../constants/constants.dart';
+import '../background_screens/discussion_screen.dart';
 import 'package:kimbweta_app/models/discussion_group.dart';
 
 

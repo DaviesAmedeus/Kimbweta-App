@@ -2,9 +2,9 @@ import 'package:flutter/material.dart';
 import 'package:kimbweta_app/api/sign_up_and_sign_in_api_service.dart';
 import 'package:kimbweta_app/constants/constants.dart';
 import 'package:kimbweta_app/models/sign_up_model.dart';
-import '../components/our_button_round.dart';
-import '../components/our_text_field.dart';
-import 'package:kimbweta_app/screens/progressHUD.dart';
+import '../../components/our_button_round.dart';
+import '../../components/our_text_field.dart';
+import 'package:kimbweta_app/components/progressHUD.dart';
 
 
 class SignUpScreen extends StatefulWidget {
@@ -72,6 +72,7 @@ class _SignUpScreenState extends State<SignUpScreen> {
                   ///Text field for userName
                   OurTextField(
                     hintText: 'User Name',
+                    obscuredText: false,
                     icon: const Icon(
                       Icons.person_2,
                       color: kMainWhiteColor,
@@ -100,6 +101,7 @@ class _SignUpScreenState extends State<SignUpScreen> {
                   ///Text field for email
                   OurTextField(
                     hintText: 'email',
+                    obscuredText: false,
                     icon: const Icon(
                       Icons.email_sharp,
                       color: kMainWhiteColor,
@@ -127,6 +129,7 @@ class _SignUpScreenState extends State<SignUpScreen> {
                   ///Text field for password
                   OurTextField(
                       hintText: 'Create Password',
+                      obscuredText: true,
                       icon: const Icon(
                         Icons.lock_outline,
                         color: kMainWhiteColor,
@@ -152,6 +155,7 @@ class _SignUpScreenState extends State<SignUpScreen> {
                   ///Text field for confirm password
                   OurTextField(
                       hintText: 'Confirm Password',
+                      obscuredText: true,
                       icon: const Icon(
                         Icons.lock_outline,
                         color: kMainWhiteColor,

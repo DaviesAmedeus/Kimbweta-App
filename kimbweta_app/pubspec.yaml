@@ -13,11 +13,11 @@ dependencies:
     sdk: flutter
   cupertino_icons: ^1.0.2
   scribble: ^0.9.1
-  sqflite: ^2.2.6
   file_picker: ^5.2.11
   syncfusion_flutter_pdfviewer: ^21.1.41
   flutter_native_splash: ^2.2.19
   http: ^0.13.6
+  path_provider: ^2.0.15
 
 flutter_native_splash:
   background_image: images/background.png

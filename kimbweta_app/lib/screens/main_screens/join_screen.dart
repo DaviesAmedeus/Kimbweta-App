@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 
-import '../constants/constants.dart';
+import '../../constants/constants.dart';
 class JoinScreen extends StatelessWidget {
   const JoinScreen({Key? key}) : super(key: key);
 

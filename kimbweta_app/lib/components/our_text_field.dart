@@ -6,12 +6,11 @@ class OurTextField extends StatelessWidget {
   String? hintText;
   Icon? icon;
   TextEditingController? controller;
-  TextStyle textStyle =  const TextStyle(
-      color: kMainWhiteColor
-  );
+  TextStyle textStyle =  const TextStyle(color: kMainWhiteColor);
   String? Function(String?)? validator;
   TextInputType? keyboardType;
   String? Function(String?)? onChanged;
+  bool obscuredText;
 
 
 
@@ -21,7 +20,8 @@ class OurTextField extends StatelessWidget {
     this.controller,
     this.validator,
     this.onChanged,
-    this.keyboardType
+    this.keyboardType,
+    required this.obscuredText,
   });
 
 
@@ -54,6 +54,9 @@ class OurTextField extends StatelessWidget {
         validator: validator,
         keyboardType: keyboardType,
         onChanged: onChanged,
+        obscureText: obscuredText,
+
+
       ),
     );
   }

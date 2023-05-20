@@ -1,8 +1,8 @@
 import 'package:flutter/material.dart';
-import 'package:kimbweta_app/screens/join_screen.dart';
+import 'package:kimbweta_app/screens/main_screens/join_screen.dart';
 
 import '../constants/constants.dart';
-import 'home_screen.dart';
+import 'main_screens/home_screen.dart';
 
 class ScreenTabs extends StatefulWidget {
   static String id = '/tabs';

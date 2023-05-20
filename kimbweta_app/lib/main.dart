@@ -1,11 +1,9 @@
 import 'package:flutter/material.dart';
 import 'package:kimbweta_app/constants/constants.dart';
-import 'package:kimbweta_app/screens/formValidation.dart';
 import 'package:kimbweta_app/screens/screen_tabs.dart';
-import 'package:kimbweta_app/screens/sign_in_screen.dart';
-import 'package:kimbweta_app/screens/sign_up_screen.dart';
-import 'package:kimbweta_app/screens/welcome_screen.dart';
-import 'package:kimbweta_app/screens/whiteboard_screen.dart';
+import 'package:kimbweta_app/screens/authentication_screens/sign_in_screen.dart';
+import 'package:kimbweta_app/screens/authentication_screens/sign_up_screen.dart';
+import 'package:kimbweta_app/components/whiteboard.dart';
 
 void main() async{
   runApp(KimbwetaApp());
@@ -33,11 +31,9 @@ class KimbwetaApp extends StatelessWidget {
         SignInScreen.id: (context)=> const SignInScreen(),
         SignUpScreen.id: (context)=> const SignUpScreen(),
         ScreenTabs.id: (context)=> const ScreenTabs(),
-        WelcomeScreen.id: (context)=> WelcomeScreen(),
         WhiteboardScreen.id: (context)=> WhiteboardScreen(),
       },
 
-      // home: const ValidationScreen(),
 
 
     );

@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:file_picker/file_picker.dart';
-import '../screens/sign_in_screen.dart';
-import '../screens/whiteboard_screen.dart';
+import '../screens/authentication_screens/sign_in_screen.dart';
+import 'whiteboard.dart';
 
 class OurPopOutMenu extends StatefulWidget {
   const OurPopOutMenu({

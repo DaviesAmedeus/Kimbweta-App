@@ -15,8 +15,8 @@ class CallApi {
   // static final String url = 'http://192.168.100.21:8000/cargo/';
 
   // static const String url = 'http://192.168.155.135:8000/';
-  static const String url = 'http://192.168.43.93:8000/';
-  static const String media_url = 'http://192.168.43.93:8000/media/';
+  static const String url = 'http://192.168.1.173:8000/';
+  static const String media_url = 'http://192.168.1.173:8000/media/';
   // static const String flask_microservice_url = 'http://68.183.5.97:3000/';
   var token = '';
 
@@ -79,6 +79,8 @@ class CallApi {
   }
 
   evaluateResponseData(res, context, {login = false}) {
+    print('>>>>>>>>>>>>>XXXXVVXXX>>>>>>>>>>>${res.statusCode}');
+
     if (res.statusCode == 200) {
       return res;
     } else if (res.statusCode == 500) {
@@ -103,6 +105,7 @@ class CallApi {
   }
 
   authenticatedPostRequest(data, apiUrl, {context}) async {
+
     var fullUrl = url + apiUrl;
     await getToken(context);
     try {
@@ -112,6 +115,7 @@ class CallApi {
           ),
           body: jsonEncode(data),
           headers: _setHeaders());
+
       return evaluateResponseData(res, context);
     } catch (e) {
       showSnack(context, 'No network');

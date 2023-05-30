@@ -1,10 +1,16 @@
+import 'dart:convert';
+
 import 'package:flutter/material.dart';
 import 'package:kimbweta_app/api/sign_up_and_sign_in_api_service.dart';
 import 'package:kimbweta_app/constants/constants.dart';
 import 'package:kimbweta_app/models/sign_up_model.dart';
+import 'package:kimbweta_app/screens/authentication_screens/sign_in_screen.dart';
+import '../../api/api.dart';
 import '../../components/our_button_round.dart';
 import '../../components/our_text_field.dart';
 import 'package:kimbweta_app/components/progressHUD.dart';
+
+import '../../components/snackbar.dart';
 
 
 class SignUpScreen extends StatefulWidget {
@@ -17,20 +23,26 @@ class SignUpScreen extends StatefulWidget {
 
 class _SignUpScreenState extends State<SignUpScreen> {
   GlobalKey<FormState> globalFormKey = GlobalKey<FormState>();
-  RegisterRequestModel? registerRequestModel;
-  late String userName;
-  late String email;
-  late String _confirmPassword;
-  late String password;
+  // RegisterRequestModel? registerRequestModel;
+  // late String userName;
+  // late String email;
+  // late String _confirmPassword;
+  // late String password;
 
   bool isApiCallProcess = false;
 
+  ///Controllers
+  TextEditingController userNameController = TextEditingController();
+  TextEditingController userEmailController = TextEditingController();
+  TextEditingController userPhoneController = TextEditingController();
+  TextEditingController userPasswordController = TextEditingController();
 
-  @override
-  void initState() {
-    super.initState();
-    registerRequestModel = RegisterRequestModel();
-  }
+
+  // @override
+  // void initState() {
+  //   super.initState();
+  //   registerRequestModel = RegisterRequestModel();
+  // }
 
   @override
   Widget build(BuildContext context) {
@@ -40,8 +52,8 @@ class _SignUpScreenState extends State<SignUpScreen> {
     );
   }
 
-  @override
   Widget _uiSetup(BuildContext context) {
+
     return Scaffold(
       backgroundColor: Colors.blueGrey,
       body: SafeArea(
@@ -65,10 +77,38 @@ class _SignUpScreenState extends State<SignUpScreen> {
           ),
           child: Padding(
             padding: const EdgeInsets.only(top: 50),
+
             child: Form(
               key: globalFormKey,
               child: ListView(
                 children: [
+
+                  ///*****Text field for userName****
+                  // TextFormField(
+                  //   controller: userNameController,
+                  //   validator: validateUsername,
+                  //   // keyboardType: TextInputType.phone,
+                  //   style: Theme.of(context).textTheme.bodyMedium,
+                  //   decoration: InputDecoration(
+                  //     filled: true,
+                  //     fillColor: AppColor.kPlaceholder3,
+                  //     border: OutlineInputBorder(
+                  //       borderRadius: BorderRadius.circular(
+                  //         8,
+                  //       ),
+                  //       borderSide: BorderSide.none,
+                  //     ),
+                  //     hintText: 'Username',
+                  //     hintStyle: const TextStyle(
+                  //       color: AppColor.kTextColor1,
+                  //       fontSize: 14,
+                  //     ),
+                  //     contentPadding: const EdgeInsets.symmetric(
+                  //       horizontal: 12,
+                  //       vertical: 8,
+                  //     ),
+                  //   ),
+                  // ),
                   ///Text field for userName
                   OurTextField(
                     hintText: 'User Name',
@@ -77,10 +117,11 @@ class _SignUpScreenState extends State<SignUpScreen> {
                       Icons.person_2,
                       color: kMainWhiteColor,
                     ),
-                    onChanged: (input) {
-                      userName = input!;
-                      return null;
-                    },
+                    controller: userNameController,
+                    // onChanged: (input) {
+                    //   userName = input!;
+                    //   return null;
+                    // },
                     validator: (input) {
                       if (input!.isEmpty) {
                         return "Field should not be empty";
@@ -106,10 +147,11 @@ class _SignUpScreenState extends State<SignUpScreen> {
                       Icons.email_sharp,
                       color: kMainWhiteColor,
                     ),
+                    controller: userEmailController,
                     keyboardType: TextInputType.emailAddress,
-                    onChanged: (input) {
-                      email = input!;
-                    },
+                    // onChanged: (input) {
+                    //   email = input!;
+                    // },
                     validator: (input) {
                       if (input!.isEmpty) {
                         return "Field should not be empty";
@@ -134,10 +176,11 @@ class _SignUpScreenState extends State<SignUpScreen> {
                         Icons.lock_outline,
                         color: kMainWhiteColor,
                       ),
-                      onChanged: (input) {
-                        password = input!;
-                        return null;
-                      },
+                      controller: userPasswordController,
+                      // onChanged: (input) {
+                      //   password = input!;
+                      //   return null;
+                      // },
                       validator: (input) {
                         if (input!.isEmpty) {
                           return "Enter password";
@@ -153,25 +196,45 @@ class _SignUpScreenState extends State<SignUpScreen> {
                   ),
 
                   ///Text field for confirm password
+                  // OurTextField(
+                  //     hintText: 'Confirm Password',
+                  //     obscuredText: true,
+                  //     icon: const Icon(
+                  //       Icons.lock_outline,
+                  //       color: kMainWhiteColor,
+                  //     ),
+                  //     onChanged: (input) {
+                  //       _confirmPassword = input!;
+                  //     },
+                  //     validator: (input) {
+                  //       if (input!.isEmpty) {
+                  //         return "Required password for match";
+                  //       }
+                  //       if (input != password) {
+                  //         return 'Password do not match';
+                  //       }
+                  //       return null;
+                  //     }),
+
+                  ///Text field for Phone number
                   OurTextField(
-                      hintText: 'Confirm Password',
-                      obscuredText: true,
+                      hintText: 'Enter Phone number',
+                      obscuredText: false,
                       icon: const Icon(
                         Icons.lock_outline,
                         color: kMainWhiteColor,
                       ),
-                      onChanged: (input) {
-                        _confirmPassword = input!;
-                      },
+                      controller: userPhoneController,
+                      // onChanged: (input) {
+                      //   _confirmPassword = input!;
+                      // },
                       validator: (input) {
                         if (input!.isEmpty) {
-                          return "Required password for match";
-                        }
-                        if (input != password) {
-                          return 'Password do not match';
+                          return "Required NUMBER for match";
                         }
                         return null;
                       }),
+
 
                   const SizedBox(
                     height: 20,
@@ -183,25 +246,26 @@ class _SignUpScreenState extends State<SignUpScreen> {
                     child: ButtonRound(
                       onPressed: () {
                         if (validateAndSave()) {
-                          _sendRegisterRequest();
+                          _register();
                           setState(() {
-                            isApiCallProcess = true;
+                            isApiCallProcess = false;
                           });
-                          SignupAndSigninAPIService apiService = SignupAndSigninAPIService();
-                          apiService.signUp(registerRequestModel!).then((value){
 
-                            setState(() {
-                              isApiCallProcess = false;
-                            });
-
-                            final snackBar =      SnackBar(
-                                  content: Text("user:${userName} created"));
-                              ScaffoldMessenger.of(context).showSnackBar(snackBar);
-
-                            Navigator.pop(context);
-
-                          });
-                          print('>>>>>>>>>>>${registerRequestModel!.toJson()}');
+                          // SignupAndSigninAPIService apiService = SignupAndSigninAPIService();
+                          // apiService.signUp(registerRequestModel!).then((value){
+                          //
+                          //   setState(() {
+                          //     isApiCallProcess = false;
+                          //   });
+                          //
+                          //   final snackBar =      SnackBar(
+                          //         content: Text("user:${userName} created"));
+                          //     ScaffoldMessenger.of(context).showSnackBar(snackBar);
+                          //
+                          //   Navigator.pop(context);
+                          //
+                          // });
+                          // print('>>>>>>>>>>>${registerRequestModel!.toJson()}');
 
                         }
                       },
@@ -249,9 +313,68 @@ class _SignUpScreenState extends State<SignUpScreen> {
   }
 
   ///function that assigns the validated inputs into the registerRequest
-  void _sendRegisterRequest() {
-    registerRequestModel!.userName = userName;
-    registerRequestModel!.email = email;
-    registerRequestModel!.password = password;
+  // void _sendRegisterRequest() {
+  //   registerRequestModel!.userName = userName;
+  //   registerRequestModel!.email = email;
+  //   registerRequestModel!.password = password;
+  // }
+
+
+
+  void _register() async{
+
+    var data = {
+      'username': userNameController.text,
+      'email': userEmailController.text,
+      'password': userPasswordController.text,
+      'phone': userPhoneController.text,
+      // 'type': 'driver',
+
+    };
+
+    print('xxxxxxxx-------AWESOMEEEEEEEEEEEEEEEEEEE------xxxxxxxxx');
+    print(data);
+
+    var res = await CallApi().authenticatedPostRequest(data, 'auth/register');
+
+    if (res == null) {
+      // setState(() {
+      //   _isLoading = false;
+      //   // _not_found = true;
+      // });
+      // showSnack(context, 'No Network!');
+    }
+    else {
+      var body = json.decode(res!.body);
+      print(body);
+      setState(() {
+        isApiCallProcess = true;
+      });
+
+      if (res.statusCode == 200) {
+        // SharedPreferences localStorage = await SharedPreferences.getInstance();
+        // // localStorage.setString("token", body['token']);
+        // localStorage.setString("user", json.encode(body));
+        // localStorage.setString("token", json.encode(body['access']));
+        // localStorage.setString("phone_number", userNumberController.text);
+
+        // setState(() {
+        //   _isLoading = false;
+        // });
+
+        Navigator.pushNamed(context, SignInScreen.id);
+        showSnack(context, 'You Have registered!');
+
+
+      } else if (res.statusCode == 400) {
+        print('hhh');
+        // setState(() {
+        //   _isLoading = false;
+        //   _not_found = true;
+        // });
+      } else {}
+    }
   }
+
+
 }

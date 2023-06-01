@@ -4,10 +4,11 @@ import '../models/login_model.dart';
 
 class APIService{
 
+  ///Login API only
+
   Future<LoginResponseModel> login(LoginRequestModel requestModel)async{
 
     var url = Uri.parse("https://reqres.in/api/login");
-
     final response = await http.post(url,
       body: requestModel.toJson()
     );

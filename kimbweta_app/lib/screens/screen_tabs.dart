@@ -1,5 +1,9 @@
+import 'dart:convert';
+
 import 'package:flutter/material.dart';
+import 'package:kimbweta_app/screens/authentication_screens/sign_in_screen.dart';
 import 'package:kimbweta_app/screens/main_screens/join_screen.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 
 import '../constants/constants.dart';
 import 'main_screens/home_screen.dart';
@@ -14,6 +18,29 @@ class ScreenTabs extends StatefulWidget {
 }
 
 class _ScreenTabsState extends State<ScreenTabs> {
+
+  // var userData, next;
+
+
+  @override
+  void initState() {
+    checkLoginStatus();
+
+    //listenNotifications();
+    super.initState();
+  }
+
+  checkLoginStatus() async {
+    SharedPreferences sharedPreferences = await SharedPreferences.getInstance();
+    if (sharedPreferences.getString("token") == null) {
+      // Navigator.push(
+      //     context, MaterialPageRoute(builder: (context) => LoginScreen()));
+
+      Navigator.pushNamed(context, SignInScreen.id);
+    }
+  }
+
+
   int _currentIndex = 0;
 
   final _tabs= [

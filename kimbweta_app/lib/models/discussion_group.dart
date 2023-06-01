@@ -1,3 +1,27 @@
+class MyGroup_Item {
+  final String id, name, code, description, created_at;
+
+  MyGroup_Item(
+      this.id,
+      this.name,
+      this.code,
+      this.description,
+      this.created_at,
+      );
+}
+
+class JoinGroup_Item {
+  final String id, name, code, description, created_at;
+
+  JoinGroup_Item(
+      this.id,
+      this.name,
+      this.code,
+      this.description,
+      this.created_at,
+      );
+}
+
 
 class DiscussionGroup{
 

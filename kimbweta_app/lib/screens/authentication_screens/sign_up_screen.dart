@@ -83,41 +83,16 @@ class _SignUpScreenState extends State<SignUpScreen> {
               child: ListView(
                 children: [
 
-                  ///*****Text field for userName****
-                  // TextFormField(
-                  //   controller: userNameController,
-                  //   validator: validateUsername,
-                  //   // keyboardType: TextInputType.phone,
-                  //   style: Theme.of(context).textTheme.bodyMedium,
-                  //   decoration: InputDecoration(
-                  //     filled: true,
-                  //     fillColor: AppColor.kPlaceholder3,
-                  //     border: OutlineInputBorder(
-                  //       borderRadius: BorderRadius.circular(
-                  //         8,
-                  //       ),
-                  //       borderSide: BorderSide.none,
-                  //     ),
-                  //     hintText: 'Username',
-                  //     hintStyle: const TextStyle(
-                  //       color: AppColor.kTextColor1,
-                  //       fontSize: 14,
-                  //     ),
-                  //     contentPadding: const EdgeInsets.symmetric(
-                  //       horizontal: 12,
-                  //       vertical: 8,
-                  //     ),
-                  //   ),
-                  // ),
                   ///Text field for userName
                   OurTextField(
                     hintText: 'User Name',
                     obscuredText: false,
-                    icon: const Icon(
+                    prefixIcon: const Icon(
                       Icons.person_2,
                       color: kMainWhiteColor,
                     ),
                     controller: userNameController,
+
                     // onChanged: (input) {
                     //   userName = input!;
                     //   return null;
@@ -143,7 +118,7 @@ class _SignUpScreenState extends State<SignUpScreen> {
                   OurTextField(
                     hintText: 'email',
                     obscuredText: false,
-                    icon: const Icon(
+                    prefixIcon: const Icon(
                       Icons.email_sharp,
                       color: kMainWhiteColor,
                     ),
@@ -172,10 +147,11 @@ class _SignUpScreenState extends State<SignUpScreen> {
                   OurTextField(
                       hintText: 'Create Password',
                       obscuredText: true,
-                      icon: const Icon(
+                      prefixIcon: const Icon(
                         Icons.lock_outline,
                         color: kMainWhiteColor,
                       ),
+                      // suffixIcon: Icon(Icons.visibility_off, color: kMainWhiteColor,),
                       controller: userPasswordController,
                       // onChanged: (input) {
                       //   password = input!;
@@ -220,10 +196,11 @@ class _SignUpScreenState extends State<SignUpScreen> {
                   OurTextField(
                       hintText: 'Enter Phone number',
                       obscuredText: false,
-                      icon: const Icon(
-                        Icons.lock_outline,
+                      prefixIcon: const Icon(
+                        Icons.phone,
                         color: kMainWhiteColor,
                       ),
+                      keyboardType: TextInputType.phone,
                       controller: userPhoneController,
                       // onChanged: (input) {
                       //   _confirmPassword = input!;
@@ -378,3 +355,4 @@ class _SignUpScreenState extends State<SignUpScreen> {
 
 
 }
+

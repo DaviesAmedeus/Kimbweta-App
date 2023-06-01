@@ -15,8 +15,8 @@ class CallApi {
   // static final String url = 'http://192.168.100.21:8000/cargo/';
 
   // static const String url = 'http://192.168.155.135:8000/';
-  static const String url = 'http://192.168.1.173:8000/';
-  static const String media_url = 'http://192.168.1.173:8000/media/';
+  static const String url = 'http://192.168.43.93:8000/';
+  static const String media_url = 'http://192.168.43.93:8000/media/';
   // static const String flask_microservice_url = 'http://68.183.5.97:3000/';
   var token = '';
 
@@ -263,3 +263,4 @@ class CallApi {
         'Authorization': token
       };
 }
+

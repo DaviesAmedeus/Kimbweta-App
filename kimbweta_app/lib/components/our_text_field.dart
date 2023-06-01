@@ -4,7 +4,8 @@ import '../constants/constants.dart';
 class OurTextField extends StatelessWidget {
 
   String? hintText;
-  Icon? icon;
+  Icon? prefixIcon;
+  Icon? suffixIcon;
   TextEditingController? controller;
   TextStyle textStyle =  const TextStyle(color: kMainWhiteColor);
   String? Function(String?)? validator;
@@ -16,7 +17,8 @@ class OurTextField extends StatelessWidget {
 
   OurTextField({
     required this.hintText,
-    required this.icon,
+    required this.prefixIcon,
+    this.suffixIcon,
     this.controller,
     this.validator,
     this.onChanged,
@@ -45,7 +47,8 @@ class OurTextField extends StatelessWidget {
 
 
             ),
-            prefixIcon: icon,
+            prefixIcon: prefixIcon,
+            suffixIcon: suffixIcon,
             hintText: hintText,
             hintStyle: textStyle
         ),
@@ -61,3 +64,4 @@ class OurTextField extends StatelessWidget {
     );
   }
 }
+

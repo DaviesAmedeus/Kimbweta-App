@@ -23,7 +23,7 @@ class SignInScreen extends StatefulWidget {
 class _SignInScreenState extends State<SignInScreen> {
   GlobalKey<FormState> globalFormKey = GlobalKey<FormState>();
 
-  TextEditingController userEmailController = TextEditingController();
+  TextEditingController userNameController = TextEditingController();
   TextEditingController userPasswordController = TextEditingController();
 
   @override
@@ -58,37 +58,15 @@ class _SignInScreenState extends State<SignInScreen> {
 
 
                 ///Text field for email
-                // OurTextField(
-                //   hintText: 'email',
-                //   obscuredText: false,
-                //
-                //   icon: const Icon(
-                //     Icons.email_sharp,
-                //     color: kMainWhiteColor,
-                //   ),
-                //   keyboardType: TextInputType.emailAddress,
-                //   onChanged: (input) {
-                //
-                //   },
-                //   validator: (input) {
-                //     if (input!.isEmpty) {
-                //       return "Field should not be empty";
-                //     }
-                //
-                //     if (!input.contains("@")) {
-                //       return "Email should be valid";
-                //     }
-                //     return null;
-                //   },
-                // ),
+
                 OurTextField(
-                  hintText: 'email',
+                  hintText: 'username',
                   obscuredText: false,
-                  icon: const Icon(
-                    Icons.email_sharp,
+                  prefixIcon: const Icon(
+                    Icons.person_2,
                     color: kMainWhiteColor,
                   ),
-                  controller: userEmailController,
+                  controller: userNameController,
                   keyboardType: TextInputType.emailAddress,
                   // onChanged: (input) {
                   //   email = input!;
@@ -107,34 +85,15 @@ class _SignInScreenState extends State<SignInScreen> {
                 const SizedBox(height: 20,),
 
                 ///Text field for password
-                // OurTextField(
-                // hintText: 'Create Password',
-                //     obscuredText: true,
-                //
-                //     icon: const Icon(
-                //   Icons.lock_outline,
-                //   color: kMainWhiteColor,
-                // ),
-                // onChanged: (input) {
-                //   return null;
-                // },
-                // validator: (input) {
-                //   if (input!.isEmpty) {
-                //     return "Enter password";
-                //   }
-                //   if (input.length < 6) {
-                //     return "Password should have at least 6 characters";
-                //   }
-                //   return null;
-                // }),
                 OurTextField(
-                    hintText: 'Create Password',
+                    hintText: 'Enter password',
                     obscuredText: true,
-                    icon: const Icon(
+                    prefixIcon: const Icon(
                       Icons.lock_outline,
                       color: kMainWhiteColor,
                     ),
                     controller: userPasswordController,
+                    keyboardType: TextInputType.text,
                     // onChanged: (input) {
                     //   password = input!;
                     //   return null;
@@ -170,32 +129,32 @@ class _SignInScreenState extends State<SignInScreen> {
 
                 const SizedBox(height: 20.0,),
 
-                ///Siugn Up with Google
-                Padding(
-                  padding: const EdgeInsets.symmetric(horizontal: 20.0),
-                  child: OutlinedButton(
-
-                    onPressed: () {
-                    },
-                    child: Padding(
-                      padding: const EdgeInsets.symmetric(vertical: 15),
-                      child: Row(
-                        mainAxisAlignment: MainAxisAlignment.center,
-                        children: const [
-
-                          Image(image: AssetImage('images/google_logo.png'), height: 25.0),
-                          SizedBox(width: 10.0,),
-                          Text('Sign In with Google',
-                            style: TextStyle(
-                                color: kMainWhiteColor,
-                              letterSpacing: 2
-                            ),
-                          ),
-                        ],
-                      ),
-                    ),
-                  ),
-                ),
+                ///Sign Up with Google
+                // Padding(
+                //   padding: const EdgeInsets.symmetric(horizontal: 20.0),
+                //   child: OutlinedButton(
+                //
+                //     onPressed: () {
+                //     },
+                //     child: Padding(
+                //       padding: const EdgeInsets.symmetric(vertical: 15),
+                //       child: Row(
+                //         mainAxisAlignment: MainAxisAlignment.center,
+                //         children: const [
+                //
+                //           Image(image: AssetImage('images/google_logo.png'), height: 25.0),
+                //           SizedBox(width: 10.0,),
+                //           Text('Sign In with Google',
+                //             style: TextStyle(
+                //                 color: kMainWhiteColor,
+                //               letterSpacing: 2
+                //             ),
+                //           ),
+                //         ],
+                //       ),
+                //     ),
+                //   ),
+                // ),
 
 
                 const SizedBox(height: 25.0,),
@@ -247,7 +206,7 @@ class _SignInScreenState extends State<SignInScreen> {
 
 // *************************************************
     var data = {
-      'username': userEmailController.text,
+      'username': userNameController.text,
       'password': userPasswordController.text,
     };
 
@@ -297,5 +256,6 @@ class _SignInScreenState extends State<SignInScreen> {
     // ignore: avoid_print
   }
 }
+
 
 

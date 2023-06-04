@@ -22,7 +22,7 @@ class KimbwetaApp extends StatelessWidget {
 
 
       theme: ThemeData(
-        primarySwatch: kMainThemeAppColor,
+        primarySwatch: Colors.blueGrey,
         fontFamily: 'Poppins',
 
       ),

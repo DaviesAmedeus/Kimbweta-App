@@ -5,7 +5,7 @@ class OurTextField extends StatelessWidget {
 
   String? hintText;
   Icon? prefixIcon;
-  Icon? suffixIcon;
+  Widget? suffixIcon;
   TextEditingController? controller;
   TextStyle textStyle =  const TextStyle(color: kMainWhiteColor);
   String? Function(String?)? validator;
@@ -32,25 +32,33 @@ class OurTextField extends StatelessWidget {
     return Padding(
       padding: const EdgeInsets.symmetric(horizontal: 20.0),
       child: TextFormField(
+        style: const TextStyle(
+            color: kMainWhiteColor
+        ),
         decoration: InputDecoration(
-            border: OutlineInputBorder(
+          prefixIcon: prefixIcon,
+          suffixIcon: suffixIcon,
+          hintText: hintText,
+          hintStyle: textStyle,
 
-
-                borderRadius: BorderRadius.circular(20.0),
-                borderSide:  const BorderSide(
-                  color: Colors.red,
-                  width: 5.0,
-                  style: BorderStyle.solid,
-                  strokeAlign: BorderSide.strokeAlignInside
-                ),
-
-
-
+          enabledBorder: OutlineInputBorder(
+            borderRadius: BorderRadius.circular(40.0),
+            borderSide: BorderSide(
+                width: 3,
+                color:kMainThemeAppColor,
+                style: BorderStyle.solid,
             ),
-            prefixIcon: prefixIcon,
-            suffixIcon: suffixIcon,
-            hintText: hintText,
-            hintStyle: textStyle
+          ),
+          border: OutlineInputBorder(
+
+            borderRadius: BorderRadius.circular(40.0),
+            borderSide:  const BorderSide(
+                color: Colors.red,
+                width: 5.0,
+                style: BorderStyle.solid,
+            ),
+          ),
+
         ),
 
         controller: controller,

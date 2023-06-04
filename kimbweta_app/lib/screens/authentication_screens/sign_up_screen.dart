@@ -1,15 +1,13 @@
 import 'dart:convert';
 
 import 'package:flutter/material.dart';
-import 'package:kimbweta_app/api/sign_up_and_sign_in_api_service.dart';
 import 'package:kimbweta_app/constants/constants.dart';
-import 'package:kimbweta_app/models/sign_up_model.dart';
 import 'package:kimbweta_app/screens/authentication_screens/sign_in_screen.dart';
 import '../../api/api.dart';
-import '../../components/our_button_round.dart';
+import '../../components/link_button.dart';
+import '../../components/our_material_button.dart';
 import '../../components/our_text_field.dart';
 import 'package:kimbweta_app/components/progressHUD.dart';
-
 import '../../components/snackbar.dart';
 
 
@@ -23,19 +21,16 @@ class SignUpScreen extends StatefulWidget {
 
 class _SignUpScreenState extends State<SignUpScreen> {
   GlobalKey<FormState> globalFormKey = GlobalKey<FormState>();
-  // RegisterRequestModel? registerRequestModel;
-  // late String userName;
-  // late String email;
-  // late String _confirmPassword;
-  // late String password;
 
   bool isApiCallProcess = false;
 
-  ///Controllers
+  ///Text Controllers
   TextEditingController userNameController = TextEditingController();
   TextEditingController userEmailController = TextEditingController();
   TextEditingController userPhoneController = TextEditingController();
   TextEditingController userPasswordController = TextEditingController();
+
+  bool obsecureText = true;
 
 
   // @override
@@ -145,14 +140,21 @@ class _SignUpScreenState extends State<SignUpScreen> {
 
                   ///Text field for password
                   OurTextField(
-                      hintText: 'Create Password',
-                      obscuredText: true,
+                      hintText: 'Create password',
+                      obscuredText: obsecureText,
                       prefixIcon: const Icon(
                         Icons.lock_outline,
                         color: kMainWhiteColor,
                       ),
-                      // suffixIcon: Icon(Icons.visibility_off, color: kMainWhiteColor,),
+                      suffixIcon: InkWell(
+                          onTap: (){
+                            setState(() {
+                              obsecureText = !obsecureText;
+                            });
+                          },
+                          child: obsecureText ? const Icon(Icons.visibility_off, color: kMainWhiteColor,) : const Icon(Icons.visibility, color: kMainWhiteColor,)),
                       controller: userPasswordController,
+                      keyboardType: TextInputType.text,
                       // onChanged: (input) {
                       //   password = input!;
                       //   return null;
@@ -213,61 +215,23 @@ class _SignUpScreenState extends State<SignUpScreen> {
                       }),
 
 
-                  const SizedBox(
-                    height: 20,
-                  ),
-
                   ///Button For registering
-                  Padding(
-                    padding: const EdgeInsets.symmetric(horizontal: 20),
-                    child: ButtonRound(
-                      onPressed: () {
-                        if (validateAndSave()) {
-                          _register();
-                          setState(() {
-                            isApiCallProcess = false;
-                          });
+                  OurMaterialButton(label: 'Sign Up', onPressed: (){
+                    if(validateAndSave()){
+                      if (validateAndSave()) {
+                        _register();
+                        setState(() {
+                          isApiCallProcess = false;
+                        });
 
-                          // SignupAndSigninAPIService apiService = SignupAndSigninAPIService();
-                          // apiService.signUp(registerRequestModel!).then((value){
-                          //
-                          //   setState(() {
-                          //     isApiCallProcess = false;
-                          //   });
-                          //
-                          //   final snackBar =      SnackBar(
-                          //         content: Text("user:${userName} created"));
-                          //     ScaffoldMessenger.of(context).showSnackBar(snackBar);
-                          //
-                          //   Navigator.pop(context);
-                          //
-                          // });
-                          // print('>>>>>>>>>>>${registerRequestModel!.toJson()}');
-
-                        }
-                      },
-                      btnText: "Sign Up",
-                    ),
-                  ),
-
-                  const SizedBox(
-                    height: 20.0,
-                  ),
+                      }
+                    }
+                  },),
 
                   ///Have an account? button
-                  Center(
-                    child: GestureDetector(
-                      onTap: () {
-                        Navigator.pop(context);
-                      },
-                      child: const Text(
-                        "Have an account? Sign In",
-                        style: TextStyle(
-                            color: Colors.blueGrey,
-                            fontWeight: FontWeight.bold),
-                      ),
-                    ),
-                  ),
+              LinkButton(normaltext: 'Have an account?', linkedText: 'Sign In', onTap: (){
+                Navigator.pushNamed(context, SignInScreen.id);
+              },),
                   const SizedBox(
                     height: 20,
                   ),

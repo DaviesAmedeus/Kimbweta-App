@@ -6,13 +6,11 @@ import 'package:scribble/scribble.dart';
 class WhiteboardScreen extends StatefulWidget {
   static String id = 'whiteboard';
 
-
   @override
   State<WhiteboardScreen> createState() => _WhiteboardScreenState();
 }
 
 class _WhiteboardScreenState extends State<WhiteboardScreen> {
-
   late ScribbleNotifier notifier;
 
   @override
@@ -20,9 +18,6 @@ class _WhiteboardScreenState extends State<WhiteboardScreen> {
     notifier = ScribbleNotifier();
     super.initState();
   }
-
-
-
 
   @override
   Widget build(BuildContext context) {
@@ -34,14 +29,16 @@ class _WhiteboardScreenState extends State<WhiteboardScreen> {
           tooltip: "Save to Image",
           onPressed: () => _saveImage(context),
         ),
-        backgroundColor: kMainThemeAppColor,
         actions: [
-          IconButton(onPressed: (){
-            Navigator.pop(context);
-          }, icon: Icon(Icons.screen_share), tooltip: 'close',),
-          IconButton(onPressed: (){
-            Navigator.pop(context);
-          }, icon: Icon(Icons.clear), tooltip: 'close',),
+          // IconButton(onPressed: (){
+          //   Navigator.pop(context);
+          // },
+          //   icon: Icon(Icons.screen_share), tooltip: 'close',),
+          IconButton(
+            onPressed: () => Navigator.pop(context),
+            icon: const Icon(Icons.clear),
+            tooltip: 'close',
+          ),
         ],
       ),
       body: SingleChildScrollView(
@@ -79,7 +76,9 @@ class _WhiteboardScreenState extends State<WhiteboardScreen> {
       context: context,
       builder: (context) => AlertDialog(
         title: const Text("Your Image"),
-        content: Image.memory(image.buffer.asUint8List()),
+        content: Image.memory(
+          image.buffer.asUint8List(),
+        ),
       ),
     );
   }
@@ -103,10 +102,10 @@ class _WhiteboardScreenState extends State<WhiteboardScreen> {
   }
 
   Widget _buildStrokeButton(
-      BuildContext context, {
-        required double strokeWidth,
-        required ScribbleState state,
-      }) {
+    BuildContext context, {
+    required double strokeWidth,
+    required ScribbleState state,
+  }) {
     final selected = state.selectedWidth == strokeWidth;
     return Padding(
       padding: const EdgeInsets.all(4),
@@ -157,16 +156,21 @@ class _WhiteboardScreenState extends State<WhiteboardScreen> {
           ),
           _buildPointerModeSwitcher(context,
               penMode:
-              state.allowedPointersMode == ScribblePointerMode.penOnly),
+                  state.allowedPointersMode == ScribblePointerMode.penOnly),
           const Divider(
             height: 20.0,
           ),
           _buildEraserButton(context, isSelected: state is Erasing),
-          _buildColorButton(context, color: Colors.black, state: state, colorTag: 'black'),
-          _buildColorButton(context, color: Colors.red, state: state, colorTag: 'red'),
-          _buildColorButton(context, color: Colors.green, state: state, colorTag: 'green'),
-          _buildColorButton(context, color: Colors.blue, state: state, colorTag: 'blue'),
-          _buildColorButton(context, color: Colors.yellow, state: state, colorTag: 'yellow'),
+          _buildColorButton(context,
+              color: Colors.black, state: state, colorTag: 'black'),
+          _buildColorButton(context,
+              color: Colors.red, state: state, colorTag: 'red'),
+          _buildColorButton(context,
+              color: Colors.green, state: state, colorTag: 'green'),
+          _buildColorButton(context,
+              color: Colors.blue, state: state, colorTag: 'blue'),
+          _buildColorButton(context,
+              color: Colors.yellow, state: state, colorTag: 'yellow'),
         ],
       ),
     );
@@ -182,25 +186,24 @@ class _WhiteboardScreenState extends State<WhiteboardScreen> {
         penMode ? ScribblePointerMode.all : ScribblePointerMode.penOnly,
       ),
       tooltip:
-      "Switch drawing mode to " + (penMode ? "all pointers" : "pen only"),
+          "Switch drawing mode to " + (penMode ? "all pointers" : "pen only"),
       child: AnimatedSwitcher(
         duration: kThemeAnimationDuration,
         child: !penMode
             ? const Icon(
-          Icons.touch_app,
-          key: ValueKey(true),
-        )
+                Icons.touch_app,
+                key: ValueKey(true),
+              )
             : const Icon(
-          Icons.do_not_touch,
-          key: ValueKey(false),
-        ),
+                Icons.do_not_touch,
+                key: ValueKey(false),
+              ),
       ),
     );
   }
 
   ///For eraser
-  Widget _buildEraserButton(
-      BuildContext context, {required bool isSelected}) {
+  Widget _buildEraserButton(BuildContext context, {required bool isSelected}) {
     return Padding(
       padding: const EdgeInsets.all(4),
       child: FloatingActionButton.small(
@@ -211,8 +214,8 @@ class _WhiteboardScreenState extends State<WhiteboardScreen> {
         shape: !isSelected
             ? const CircleBorder()
             : RoundedRectangleBorder(
-          borderRadius: BorderRadius.circular(8),
-        ),
+                borderRadius: BorderRadius.circular(8),
+              ),
         child: const Icon(Icons.remove, color: Colors.blueGrey),
         onPressed: notifier.setEraser,
       ),
@@ -220,24 +223,22 @@ class _WhiteboardScreenState extends State<WhiteboardScreen> {
   }
 
   ///For  color
-  Widget _buildColorButton(
-      BuildContext context, {
-        required Color color,
-        required ScribbleState state,
-        required String colorTag
-      }) {
+  Widget _buildColorButton(BuildContext context,
+      {required Color color,
+      required ScribbleState state,
+      required String colorTag}) {
     final isSelected = state is Drawing && state.selectedColor == color.value;
     return Padding(
       padding: const EdgeInsets.all(4),
       child: FloatingActionButton.small(
-        heroTag: colorTag,
+          heroTag: colorTag,
           backgroundColor: color,
           elevation: isSelected ? 10 : 2,
           shape: !isSelected
               ? const CircleBorder()
               : RoundedRectangleBorder(
-            borderRadius: BorderRadius.circular(8),
-          ),
+                  borderRadius: BorderRadius.circular(8),
+                ),
           child: Container(),
           onPressed: () => notifier.setColor(color)),
     );
@@ -245,8 +246,8 @@ class _WhiteboardScreenState extends State<WhiteboardScreen> {
 
   ///For undo
   Widget _buildUndoButton(
-      BuildContext context,
-      ) {
+    BuildContext context,
+  ) {
     return FloatingActionButton.small(
       heroTag: 'undo',
       tooltip: "Undo",
@@ -262,8 +263,8 @@ class _WhiteboardScreenState extends State<WhiteboardScreen> {
 
   ///For redo
   Widget _buildRedoButton(
-      BuildContext context,
-      ) {
+    BuildContext context,
+  ) {
     return FloatingActionButton.small(
       heroTag: 'Redo',
       tooltip: "Redo",
@@ -287,9 +288,4 @@ class _WhiteboardScreenState extends State<WhiteboardScreen> {
       child: const Icon(Icons.clear),
     );
   }
-
-
-
 }
-
-

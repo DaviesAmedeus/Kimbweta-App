@@ -291,14 +291,26 @@ class _JoinScreenState extends State<JoinScreen> {
         ],
       ),
 
-      floatingActionButton: FloatingActionButton(
-        backgroundColor: Colors.blueGrey,
-        child: const Icon(Icons.add, color: kMainWhiteColor,),
-        onPressed: (){
+      ///My FBA
+      // floatingActionButton: FloatingActionButton(
+      //   backgroundColor: Colors.blueGrey,
+      //   child: const Icon(Icons.add, color: kMainWhiteColor,),
+      //   onPressed: (){
+      //
+      //     // _showDialogForm(context, null);
+      //
+      //   },
+      // ),
 
-          // _showDialogForm(context, null);
-
+      /// Michael Michael modified FBA
+      floatingActionButton: FloatingActionButton.extended(
+        onPressed: () {
+          // Add your onPressed code here!
+          // selectFile();
+          // _add_Group_Dialog(context);
         },
+        label: const Text('Join Group'),
+        backgroundColor: kMainThemeAppColor,
       ),
 
 

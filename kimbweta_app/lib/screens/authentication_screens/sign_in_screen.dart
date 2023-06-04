@@ -7,8 +7,10 @@ import 'package:kimbweta_app/screens/screen_tabs.dart';
 import 'package:kimbweta_app/screens/authentication_screens/sign_up_screen.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import '../../api/api.dart';
-import '../../components/our_button_round.dart';
+import '../../components/link_button.dart';
+import '../../components/our_material_button.dart';
 import '../../components/our_text_field.dart';
+import '../../components/progressHUD.dart';
 import '../../components/snackbar.dart';
 
 
@@ -21,10 +23,22 @@ class SignInScreen extends StatefulWidget {
 }
 
 class _SignInScreenState extends State<SignInScreen> {
+  bool obsecureText = true;
+  bool isApiCallProcess = false;
+
   GlobalKey<FormState> globalFormKey = GlobalKey<FormState>();
 
+  ///Text Controllers
   TextEditingController userNameController = TextEditingController();
   TextEditingController userPasswordController = TextEditingController();
+
+  // @override
+  // Widget build(BuildContext context) {
+  //   return ProgressHUD(child: _uiSetup(context),
+  //     inAsyncCall: isApiCallProcess,
+  //     opacity: 0.3,
+  //   );
+  // }
 
   @override
   Widget build(BuildContext context) {
@@ -87,11 +101,18 @@ class _SignInScreenState extends State<SignInScreen> {
                 ///Text field for password
                 OurTextField(
                     hintText: 'Enter password',
-                    obscuredText: true,
+                    obscuredText: obsecureText,
                     prefixIcon: const Icon(
                       Icons.lock_outline,
                       color: kMainWhiteColor,
                     ),
+                    suffixIcon: InkWell(
+                        onTap: (){
+                          setState(() {
+                            obsecureText = !obsecureText;
+                          });
+                        },
+                        child: obsecureText ? const Icon(Icons.visibility_off, color: kMainWhiteColor,) : const Icon(Icons.visibility, color: kMainWhiteColor,)),
                     controller: userPasswordController,
                     keyboardType: TextInputType.text,
                     // onChanged: (input) {
@@ -108,69 +129,22 @@ class _SignInScreenState extends State<SignInScreen> {
                       return null;
                     }),
 
-                const SizedBox(height: 20,),
 
                 ///sign In button
-                Padding(
-                  padding: const EdgeInsets.symmetric(horizontal: 20),
-                  child: ButtonRound(
-                    onPressed: (){
-                      if(validateAndSave()){
-                        _login();
+                OurMaterialButton(label: 'Sign In', onPressed: (){
+                  if(validateAndSave()){
+                    _login();
+                    setState(() {
+                      isApiCallProcess = false;
+                    });
 
-                      }
-
-
-                    },
-                    btnText: "Sign In",
-
-                  ),
-                ),
-
-                const SizedBox(height: 20.0,),
-
-                ///Sign Up with Google
-                // Padding(
-                //   padding: const EdgeInsets.symmetric(horizontal: 20.0),
-                //   child: OutlinedButton(
-                //
-                //     onPressed: () {
-                //     },
-                //     child: Padding(
-                //       padding: const EdgeInsets.symmetric(vertical: 15),
-                //       child: Row(
-                //         mainAxisAlignment: MainAxisAlignment.center,
-                //         children: const [
-                //
-                //           Image(image: AssetImage('images/google_logo.png'), height: 25.0),
-                //           SizedBox(width: 10.0,),
-                //           Text('Sign In with Google',
-                //             style: TextStyle(
-                //                 color: kMainWhiteColor,
-                //               letterSpacing: 2
-                //             ),
-                //           ),
-                //         ],
-                //       ),
-                //     ),
-                //   ),
-                // ),
-
-
-                const SizedBox(height: 25.0,),
+                  }
+                },),
 
                 ///Dont have an account button
-                 GestureDetector(
-                   onTap: (){
-                     Navigator.pushNamed(context, SignUpScreen.id);
-                   },
-                   child: const Text("Don't have an account? Sign Up",
-                     style: TextStyle(
-                         color: Colors.blueGrey,
-                       fontWeight: FontWeight.bold
-                     ),
-                   ),
-                 ),
+                LinkButton(normaltext: 'Dont have an account?', linkedText: 'Sign Up', onTap: (){
+                  Navigator.pushNamed(context, SignUpScreen.id);
+                },),
                 const SizedBox(height: 20,),
               ],
             ),
@@ -214,6 +188,7 @@ class _SignInScreenState extends State<SignInScreen> {
     print(data);
 
     var res = await CallApi().authenticatedPostRequest(data, 'auth/login');
+
     if (res == null) {
       print('NULLLLLLLLLLLLLLLLLL');
       // setState(() {
@@ -222,6 +197,10 @@ class _SignInScreenState extends State<SignInScreen> {
       // });
       // showSnack(context, 'No Network!');
     } else {
+      setState(() {
+        isApiCallProcess = true;
+      });
+
       var body = json.decode(res!.body);
       print(body);
 
@@ -256,6 +235,10 @@ class _SignInScreenState extends State<SignInScreen> {
     // ignore: avoid_print
   }
 }
+
+
+
+
 
 
 

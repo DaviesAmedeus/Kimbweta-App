@@ -1,17 +1,28 @@
 import 'package:file_picker/file_picker.dart';
 import 'package:flutter/material.dart';
+import 'package:kimbweta_app/components/our_material_icon_button.dart';
 import 'package:kimbweta_app/screens/background_screens/document_view_screen.dart';
 import 'package:kimbweta_app/screens/screen_tabs.dart';
 import 'package:path_provider/path_provider.dart';
-import '../../components/our_button_round.dart';
+// import '../../components/our_button_round.dart';
+import '../../components/button_round.dart';
 import '../../components/our_pop_up_menu.dart';
 import 'dart:io';
 import 'package:kimbweta_app/components/progressHUD.dart';
 
+import '../../constants/constants.dart';
+
 
 class DiscussionScreen extends StatefulWidget {
-  String dName;
-  DiscussionScreen({super.key, required this.dName});
+  final String? gpId, name, code, description, created_at;
+
+  DiscussionScreen({
+    this.gpId,
+    this.name,
+    this.code,
+    this.description,
+    this.created_at,
+});
 
   static String id = 'Discussion';
 
@@ -20,24 +31,32 @@ class DiscussionScreen extends StatefulWidget {
 }
 
 class _DiscussionScreenState extends State<DiscussionScreen> {
-  late FilePickerResult result;
-  File selectedFile = File('');
+  var userData;
+  var rootid;
+  var result;
+  var status;
+
+  var fileName;
+  File? file;
+
+  // late FilePickerResult result;
   // PlatformFile? pickedFile;
 
-  bool isApiCallProcess = false;
-  @override
-  Widget build(BuildContext context) {
-    return ProgressHUD(child: _uiSetup(context),
-      inAsyncCall: isApiCallProcess,
-      opacity: 0.3,
-    );
-  }
+  // bool isApiCallProcess = false;
+  // @override
+  // Widget build(BuildContext context) {
+  //   return ProgressHUD(child: _uiSetup(context),
+  //     inAsyncCall: isApiCallProcess,
+  //     opacity: 0.3,
+  //   );
+  // }
 
   @override
-  Widget _uiSetup(BuildContext context) {
+  Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: Text(widget.dName),
+        title: Text(widget.name!),
+
         ///Side Drawer
         actions: const [
           OurPopOutMenu(),
@@ -60,46 +79,43 @@ class _DiscussionScreenState extends State<DiscussionScreen> {
             child: Column(
               mainAxisAlignment: MainAxisAlignment.center,
               children: [
+
                 ///It should be active when document/whiteboard have been accessed
+                ///Button for picking a file
                 Padding(
-                  padding: const EdgeInsets.symmetric(horizontal: 50),
-                  child: ButtonRound(
-                    onPressed: (){
-                      // await clearCacheDirectory();
+                    padding: const EdgeInsets.symmetric(horizontal: 50),
+                    child: OurMaterialIconButton(
+                      icon: const Icon(
+                        Icons.file_present, color: kMainWhiteColor,),
+                      label: 'Pick A file',
+                      onPressed: () {
+                        // A f(x) that enable a file to be picked
+                        pickAFile();
+                        // setState(() {
+                        //   Navigator.push(context, MaterialPageRoute(
+                        //     builder: (context)=>DocumentViewScreen(
+                        //       path: selectedFile,
+                        //       // docName:pickedFile!.name
+                        //     ),
+                        //   ),
+                        //   );
+                        // });
+                      },)),
+                const SizedBox(height: 10,),
 
-                      pickAFile();
-                      setState(() {
-                        Navigator.push(context, MaterialPageRoute(
-                          builder: (context)=>DocumentViewScreen(
-                              path: selectedFile,
-                              // docName:pickedFile!.name
-                          ),
-                        ),
-                        );
-                      });
-                    },
-                    icon: Icon(Icons.file_present),
-                    iconWidth: 10,
-                    btnText: "Pick a file",
-
-                  ),
-                ),
-               const SizedBox(height: 10,),
+                ///Button for uploading a file
                 Padding(
-                  padding: const EdgeInsets.symmetric(horizontal: 50),
-                  child: ButtonRound(
-                    onPressed: (){
-                      Navigator.pushNamed(context, ScreenTabs.id);
-                    },
-                    icon: Icon(Icons.upload_file),
-                    iconWidth: 5,
-                    btnText: "Upload file",
+                    padding: const EdgeInsets.symmetric(horizontal: 50),
+                    child: OurMaterialIconButton(
+                      icon: const Icon(
+                        Icons.upload_file, color: kMainWhiteColor,),
+                      label: 'Upload file',
+                      onPressed: () {
+                        Navigator.pushNamed(context, ScreenTabs.id);
+                      },
+                    )),
 
-                  ),
-                ),
-
-
-
+                ///Test Button
 
 
               ],
@@ -107,47 +123,92 @@ class _DiscussionScreenState extends State<DiscussionScreen> {
           ),
         ),
       ),
+
     );
   }
 
   ///Function for picking a file
   void pickAFile() async {
-    // Clear the cache directory before picking another file
+    ///My code (They did work perfectly but likely to test efficiency)
+    // // Clear the cache directory before picking another file
+    //
+    // //Here we are picking a file
+    // result = (await FilePicker.platform.pickFiles())!;
+    // // print('XXXXX>>>>>>${result.files.single.path}<<<<<XXXXX');
+    //
+    // if (result != null) {
+    //   try {
+    //     //Here we are storing the adress of picked file into a cache
+    //     selectedFile = File(result.files.single.path!);
+    //       // print('>>>>>>>>>xxxxxxxx>>>>>>>>>${selectedFile}');
+    //
+    //   } catch (e) {
+    //     print('Error occurred: $e');
+    //   }
+    //
+    // } else {
+    //   Navigator.pop(context);
+    // }
 
-    //Here we are picking a file
-    result = (await FilePicker.platform.pickFiles())!;
-    // print('XXXXX>>>>>>${result.files.single.path}<<<<<XXXXX');
+    ///Michael Michael codes (With my modifications)
+    final result = await FilePicker.platform.pickFiles(
+      type: FileType.custom,
+      allowedExtensions: ['pdf'],
+      allowMultiple: false,
+    );
 
-    if (result != null) {
-      try {
-        //Here we are storing the adress of picked file into a cache
-        selectedFile = File(result.files.single.path!);
-          // print('>>>>>>>>>xxxxxxxx>>>>>>>>>${selectedFile}');
-
-      } catch (e) {
-        print('Error occurred: $e');
-      }
-
-    } else {
+    if (result == null) {
       Navigator.pop(context);
     }
-  }
+    else {
+      file = File(result.files.single.path!);
 
-  Future<void> clearCacheDirectory() async {
-    // Get the cache directory path
-    Directory cacheDir = await getTemporaryDirectory();
+      // List<File> files = result.paths.map((path) => File(path!)).toList();
 
-    // Get all the files in the cache directory
-    List<FileSystemEntity> files = cacheDir.listSync(recursive: true);
+      // print(result.files.single.path);
+      print('>>>>PRINTING FILE:>>>$file');
 
-    // Delete each file in the cache directory
-    for (var file in files) {
-      if (file is File) {
-        await file.delete();
+      setState(() {
+        // file = File(path);
+        // uploadFilePhaseZero();
+      });
+
+      print("file============$file");
+      print("path============${file!.path}");
+      // print("file============"+file!);
+
+      // uploadFilePhaseOneDio();
+
+      //   Navigator.of(this.context).push(
+      //       MaterialPageRoute(builder: (context) => PDFViewerPage(file: file)));
+      // }
+
+      Navigator.push(context, MaterialPageRoute(
+        builder: (context)=>DocumentViewScreen(file: file),
+      ),
+      );
+
+
+    }
+
+    Future<void> clearCacheDirectory() async {
+      // Get the cache directory path
+      Directory cacheDir = await getTemporaryDirectory();
+
+      // Get all the files in the cache directory
+      List<FileSystemEntity> files = cacheDir.listSync(recursive: true);
+
+      // Delete each file in the cache directory
+      for (var file in files) {
+        if (file is File) {
+          await file.delete();
+        }
       }
     }
   }
 }
+
+
 
 
 

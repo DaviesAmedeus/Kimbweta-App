@@ -3,6 +3,7 @@ import 'dart:convert';
 import 'package:flutter/material.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import '../../api/api.dart';
+import '../../components/progressHUD.dart';
 import '../../components/snackbar.dart';
 import '../../constants/constants.dart';
 import '../background_screens/discussion_screen.dart';
@@ -18,20 +19,24 @@ class HomeScreen extends StatefulWidget {
 
 class _HomeScreenState extends State<HomeScreen> {
   var userData, next;
+  bool isApiCallProcess = false;
+
 
   List<MyGroup_Item>? my_group_data;
   List<JoinGroup_Item>? join_group_data;
 
 
+
   @override
   void initState() {
-    _getUserInfo();
 
+    _getUserInfo();
     //listenNotifications();
     super.initState();
   }
 
   void _getUserInfo() async {
+
     SharedPreferences localStorage = await SharedPreferences.getInstance();
     var userJson = localStorage.getString('user');
     var user = json.decode(userJson!);
@@ -41,8 +46,9 @@ class _HomeScreenState extends State<HomeScreen> {
     print(userData);
     fetchMyGroupData();
     fetchJoinGroupData();
-  }
 
+
+  }
 
   // void addGroup(String gpName, String? gpDesc) {
   //   int groupID = DiscussionGroup.createdGroups.length + 1;
@@ -236,10 +242,16 @@ class _HomeScreenState extends State<HomeScreen> {
       return [];
     }
   }
-
-
   @override
   Widget build(BuildContext context) {
+    return ProgressHUD(child: _uiSetup(context),
+      inAsyncCall: isApiCallProcess,
+      opacity: 0.3,
+    );
+  }
+
+  @override
+  Widget _uiSetup(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
         leading: IconButton(
@@ -327,16 +339,28 @@ class _HomeScreenState extends State<HomeScreen> {
         ],
       ),
 
-      floatingActionButton: FloatingActionButton(
-        backgroundColor: Colors.blueGrey,
-        child: const Icon(Icons.add, color: kMainWhiteColor,),
-        onPressed: (){
+      ///My FBA
+      // floatingActionButton: FloatingActionButton(
+      //   backgroundColor: Colors.blueGrey,
+      //   child: const Icon(Icons.add, color: kMainWhiteColor,),
+      //   onPressed: (){
+      //
+      //     // _showDialogForm(context, null);
+      //
+      //   },
+      // ),
 
-          // _showDialogForm(context, null);
-
+      /// Michael Michael modified FBA
+      floatingActionButton: FloatingActionButton.extended(
+        onPressed: () {
+          // Add your onPressed code here!
+          // selectFile();
+          // _add_Group_Dialog(context);
         },
+        label: const Text('Create Group'),
+        icon: const Icon(Icons.add),
+        backgroundColor: kMainThemeAppColor,
       ),
-
 
     );
   }
@@ -350,7 +374,9 @@ class _HomeScreenState extends State<HomeScreen> {
       );
     } else if (my_group_data != null && my_group_data?.length == 0) {
       // No Data
-      return const Text('No Data or No Group yet...');
+      return const Center(
+        child: Text('No Group Yet...'),
+      );;
     } else {
       return ListView.builder(
         itemCount:my_group_data!.length,
@@ -362,7 +388,14 @@ class _HomeScreenState extends State<HomeScreen> {
             onTap: (){
               Navigator.push(context, MaterialPageRoute(
                   builder: (context)=> DiscussionScreen(
-                      dName:DiscussionGroup.createdGroups[index].groupName.toString())));
+                      gpId: my_group_data![index].id,
+                      name:my_group_data![index].name,
+                      code:my_group_data![index].code,
+                      description:my_group_data![index].description,
+                      created_at:my_group_data![index].created_at
+                  )));
+
+
             },
             child: ListTile(
               title: Text(my_group_data![index].name,

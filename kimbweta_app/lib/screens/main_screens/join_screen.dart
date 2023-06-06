@@ -1,12 +1,16 @@
 import 'dart:convert';
 
 import 'package:flutter/material.dart';
+import 'package:kimbweta_app/components/our_material_button.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
 import '../../api/api.dart';
+import '../../components/custom_input_field.dart';
+import '../../components/loading_component.dart';
 import '../../components/snackbar.dart';
 import '../../constants/constants.dart';
 import '../../models/discussion_group.dart';
+import '../background_screens/joined_discussion_screen.dart';
 class JoinScreen extends StatefulWidget {
   const JoinScreen({Key? key}) : super(key: key);
 
@@ -15,10 +19,12 @@ class JoinScreen extends StatefulWidget {
 }
 
 class _JoinScreenState extends State<JoinScreen> {
-
   var userData, next;
-
+  bool checkStatus = false;
   List<JoinGroup_Item>? join_group_data;
+  List<MyGroup_Item>? my_group_data;
+
+  TextEditingController codeController = TextEditingController();
 
 
   @override
@@ -38,118 +44,6 @@ class _JoinScreenState extends State<JoinScreen> {
     print(userData);
     fetchJoinGroupData();
   }
-
-
-  // void addGroup(String gpName, String? gpDesc) {
-  //   int groupID = DiscussionGroup.createdGroups.length + 1;
-  //   final group = DiscussionGroup(groupName: gpName, groupDesc: gpDesc, createAt: DateTime.now(), id: groupID );
-  //   DiscussionGroup.createdGroups.add(group);
-  //   print(DiscussionGroup.createdGroups.length);
-  // }
-  //
-  // void  _deleteItem(int id){
-  //
-  //   setState(() {
-  //     DiscussionGroup.createdGroups.removeAt(id);
-  //
-  //   });
-  //
-  //
-  //   ScaffoldMessenger.of(context).showSnackBar(
-  //       const  SnackBar(
-  //         content: Text('Successflul deleted!!'),));
-  //   print('>>>>>Item Deleted!!! remained>> ${DiscussionGroup.createdGroups.length}');
-  //
-  // }
-  //
-  //
-  // TextEditingController _discNameController =TextEditingController();
-  // TextEditingController _discDescController =TextEditingController();
-  //
-  //
-  // Future<void> _showDialogForm(BuildContext context, int? id) async {
-  //
-  //   showDialog(
-  //       context:context,
-  //       builder: (context)=> AlertDialog(
-  //
-  //         contentPadding: const EdgeInsets.only(left: 25, right: 25),
-  //         title:  Center(
-  //           child: Text(id == null ? 'Create Discussion' : 'Remove Discussion?',
-  //           style: const TextStyle(color: kMainBlackColor),),),
-  //         shape: const RoundedRectangleBorder(
-  //             borderRadius: BorderRadius.all(Radius.circular(20.0))),
-  //
-  //         content: Container(
-  //           width: 450.0,
-  //           child: SingleChildScrollView(
-  //             child: id == null ? Column(
-  //               crossAxisAlignment: CrossAxisAlignment.stretch,
-  //               children: <Widget>[
-  //                 const SizedBox(height: 20.0),
-  //
-  //                 TextField(
-  //                   decoration: const InputDecoration(
-  //                       border: OutlineInputBorder(),
-  //                       hintText: 'Discussion Name'),
-  //                   controller: _discNameController,
-  //                 ),
-  //                 SizedBox(height: 10,),
-  //
-  //                 TextField(
-  //                   decoration: const InputDecoration(
-  //                       border: OutlineInputBorder(),
-  //                       hintText: 'Discussion Desc'),
-  //                   controller: _discDescController,
-  //                 ),
-  //
-  //               ],
-  //             ) : Container(),
-  //           ),
-  //         ),
-  //
-  //         actions: <Widget>[
-  //           Row(
-  //             mainAxisAlignment: MainAxisAlignment.center,
-  //             children: <Widget>[
-  //               Container(
-  //                 width: MediaQuery.of(context).size.width * 0.30,
-  //                 child: TextButton(
-  //                   onPressed: (){
-  //                     Navigator.pop(context);
-  //                   },
-  //                   child: const Text("CANCEL"),
-  //                 ),
-  //               ),
-  //               Container(
-  //                 width: MediaQuery.of(context).size.width * 0.30,
-  //                 child: TextButton(
-  //                   onPressed: () {
-  //
-  //                     if(id == null){
-  //                       setState(() {
-  //                         addGroup(_discNameController.text, _discDescController.text);
-  //                       });
-  //
-  //                     } else{
-  //                        _deleteItem(id);
-  //                       print('NOTHING');
-  //                     }
-  //
-  //                     _discNameController.text = '';
-  //                     _discDescController.text = '';
-  //
-  //                     Navigator.pop(context);
-  //                   },
-  //                   child: Text(id == null ? 'CREATE' : 'REMOVE'),
-  //                 ),
-  //               )
-  //             ],
-  //           )
-  //         ],
-  //       )
-  //   );
-  // }
 
   fetchJoinGroupData() async {
     // var customer = userData['id'].toString();
@@ -185,6 +79,7 @@ class _JoinScreenState extends State<JoinScreen> {
       // });
 
       setState(() {
+        checkStatus = true;
         join_group_data = _join_group_items;
       });
     } else {
@@ -194,6 +89,9 @@ class _JoinScreenState extends State<JoinScreen> {
   }
   @override
   Widget build(BuildContext context) {
+    if(checkStatus == false){
+      return const LoadingComponent();
+    }
     return Scaffold(
       appBar: AppBar(
         leading: IconButton(
@@ -203,7 +101,7 @@ class _JoinScreenState extends State<JoinScreen> {
             Navigator.pop(context);
           },
         ),
-        title: (join_group_data!.length == 1) ? Text('[ ${join_group_data!.length} - Group Created ]',style: const TextStyle(
+        title: (join_group_data!.length == 1) ? Text('[ You are in  ${join_group_data!.length} Group]',style: const TextStyle(
             fontFamily: 'Montserrat2',
             color: kDiscussionDescriptionColor,
             fontSize: 15,
@@ -211,17 +109,14 @@ class _JoinScreenState extends State<JoinScreen> {
 
         ),
         )
-            : Text('[ ${join_group_data!.length} - Groups Created ]',style: const TextStyle(
+            : Text('[  You are in  ${join_group_data!.length}  Groups  ]',style: const TextStyle(
             fontFamily: 'Montserrat2',
             color: kDiscussionDescriptionColor,
             fontSize: 15,
             fontWeight: FontWeight.bold
 
         ),
-        )
-
-        ,
-
+        ),
       ),
       backgroundColor: Colors.blueGrey,
       body: Column(
@@ -248,66 +143,18 @@ class _JoinScreenState extends State<JoinScreen> {
               ///Displays the discussions created
               child: join_group_Component(),
 
-              // child: ListView(
-              //   children: [
-              //     ListTile(
-              //       title: const Text('HCI',
-              //         style: TextStyle(
-              //           color: kMainWhiteColor,
-              //           letterSpacing: 2,
-              //           fontSize: 18,
-              //           fontWeight: FontWeight.bold,
-              //
-              //         ),
-              //         maxLines: 1,
-              //         overflow: TextOverflow.ellipsis,
-              //
-              //
-              //       ),
-              //       subtitle: const Text('Created On: 23-07-2023',
-              //         style: TextStyle(
-              //             color: Colors.white24,
-              //             fontFamily: 'Montserrat2',
-              //             fontWeight: FontWeight.bold,
-              //             letterSpacing: 1,
-              //             fontSize: 9
-              //         ),
-              //       ),
-              //       trailing: IconButton(
-              //           icon: const Icon(Icons.delete, color: kMainThemeAppColor,),
-              //
-              //           // onPressed: () =>_showDialogForm(context, DiscussionGroup.createdGroups.indexOf(
-              //           //     DiscussionGroup.createdGroups[index]))
-              //         onPressed: (){},
-              //
-              //
-              //
-              //       ),
-              //     ),
-              //   ],
-              // ),
             ),
           )
         ],
       ),
 
-      ///My FBA
-      // floatingActionButton: FloatingActionButton(
-      //   backgroundColor: Colors.blueGrey,
-      //   child: const Icon(Icons.add, color: kMainWhiteColor,),
-      //   onPressed: (){
-      //
-      //     // _showDialogForm(context, null);
-      //
-      //   },
-      // ),
 
       /// Michael Michael modified FBA
       floatingActionButton: FloatingActionButton.extended(
         onPressed: () {
           // Add your onPressed code here!
           // selectFile();
-          // _add_Group_Dialog(context);
+          _join_Group_Dialog(context);
         },
         label: const Text('Join Group'),
         backgroundColor: kMainThemeAppColor,
@@ -336,9 +183,14 @@ class _JoinScreenState extends State<JoinScreen> {
           elevation: 1,
           child: InkWell(
             onTap: (){
-              // Navigator.push(context, MaterialPageRoute(
-              //     builder: (context)=> DiscussionScreen(
-              //         dName:DiscussionGroup.createdGroups[index].groupName.toString())));
+              Navigator.push(context, MaterialPageRoute(
+                  builder: (context)=> JoinedDiscussionScreen(
+                      gpId: join_group_data![index].id,
+                      name:join_group_data![index].name,
+                      code:join_group_data![index].code,
+                      description:join_group_data![index].description,
+                      created_at:join_group_data![index].created_at
+                )));
             },
             child: ListTile(
               title: Text(join_group_data![index].name,
@@ -376,4 +228,77 @@ class _JoinScreenState extends State<JoinScreen> {
       );
     }
   }
+
+  _join_Group_Dialog(BuildContext context) {
+    showDialog(
+        context: context,
+        builder: (context) {
+          return AlertDialog(
+            scrollable: true,
+            content: Form(
+              child: Column(
+                children: [
+                  CustomInputField(
+                    controller: codeController,
+                    hintText: 'Enter Group Code',
+                    textInputAction: TextInputAction.next,
+                  ),
+                  // _contentServices(context),
+
+                  const SizedBox(
+                    height: 2,
+                  ),
+
+
+
+
+                  OurMaterialButton(label: 'Join', onPressed: (){
+                    _joinGroup_API();
+                    Navigator.pop(context);
+                  })
+                ],
+              ),
+            ),
+          );
+        });
+  }
+
+  _joinGroup_API() async {
+    var data = {
+      'user_id': userData['user']['id'],
+      'code': codeController.text,
+      // 'created_by': userData['user']['id'],
+      // 'type': 'driver',
+    };
+
+    print(data);
+
+    var res = await CallApi().authenticatedPostRequest(data, 'join_group');
+    if (res == null) {
+      // setState(() {
+      //   _isLoading = false;
+      //   // _not_found = true;
+      // });
+      // showSnack(context, 'No Network!');
+    } else {
+      var body = json.decode(res!.body);
+      print(body);
+
+      if (res.statusCode == 200) {
+        showSnack(context, 'Group Joined Successfully');
+        codeController.clear;
+        // descriptionController.clear;
+
+        setState(() {});
+      } else if (res.statusCode == 400) {
+        print('hhh');
+        // setState(() {
+        //   _isLoading = false;
+        //   _not_found = true;
+        // });
+      } else {}
+    }
+  }
 }
+
+

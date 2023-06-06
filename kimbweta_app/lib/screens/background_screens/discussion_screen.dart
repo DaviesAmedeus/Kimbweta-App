@@ -1,17 +1,18 @@
+import 'dart:convert';
+import 'dart:io';
 import 'package:file_picker/file_picker.dart';
 import 'package:flutter/material.dart';
 import 'package:kimbweta_app/components/our_material_icon_button.dart';
 import 'package:kimbweta_app/screens/background_screens/document_view_screen.dart';
-import 'package:kimbweta_app/screens/screen_tabs.dart';
+import 'package:kimbweta_app/screens/background_screens/all_documents_screen.dart';
+import 'package:path/path.dart'as path;
 import 'package:path_provider/path_provider.dart';
-// import '../../components/our_button_round.dart';
-import '../../components/button_round.dart';
+import 'package:dio/dio.dart';
+import '../../api/api.dart';
 import '../../components/our_pop_up_menu.dart';
-import 'dart:io';
-import 'package:kimbweta_app/components/progressHUD.dart';
-
+import '../../components/snackbar.dart';
 import '../../constants/constants.dart';
-
+import '../authentication_screens/sign_in_screen.dart';
 
 class DiscussionScreen extends StatefulWidget {
   final String? gpId, name, code, description, created_at;
@@ -58,8 +59,41 @@ class _DiscussionScreenState extends State<DiscussionScreen> {
         title: Text(widget.name!),
 
         ///Side Drawer
-        actions: const [
-          OurPopOutMenu(),
+        actions:  [
+          PopupMenuButton(itemBuilder: (BuildContext context)=><PopupMenuEntry>[
+            const PopupMenuItem(
+              child: ListTile(
+                title: Text('TOOLS:'),
+                onTap: null,
+              ),
+            ),
+            PopupMenuItem(
+              child: ListTile(
+                leading: const Icon(Icons.logout),
+                title: const Text('Sign Out'),
+                onTap: (){
+                  Navigator.pushAndRemoveUntil(context, MaterialPageRoute(builder: (context)=>const SignInScreen()), (route) => false);
+                },
+              ),
+            ),
+            PopupMenuItem(
+              child: ListTile(
+                leading: const Icon(Icons.file_copy),
+                title: const Text('Group file uploads'),
+                onTap: (){
+                  Navigator.of(context)
+                      .push(MaterialPageRoute(builder: (context) => All_DocumentsScreen(
+                    id:widget.gpId,
+                    name:widget.name,
+                    code:widget.code,
+                    description:widget.description,
+                    created_at:widget.created_at,)));
+                },
+              ),
+            ),
+
+          ],)
+
         ],
       ),
 
@@ -110,8 +144,8 @@ class _DiscussionScreenState extends State<DiscussionScreen> {
                       icon: const Icon(
                         Icons.upload_file, color: kMainWhiteColor,),
                       label: 'Upload file',
-                      onPressed: () {
-                        Navigator.pushNamed(context, ScreenTabs.id);
+                      onPressed: (){
+                       selectFileToUploadFile();
                       },
                     )),
 
@@ -157,14 +191,11 @@ class _DiscussionScreenState extends State<DiscussionScreen> {
       allowMultiple: false,
     );
 
-    if (result == null) {
-      Navigator.pop(context);
-    }
-    else {
+
+    if(result != null) {
       file = File(result.files.single.path!);
 
       // List<File> files = result.paths.map((path) => File(path!)).toList();
-
       // print(result.files.single.path);
       print('>>>>PRINTING FILE:>>>$file');
 
@@ -190,6 +221,9 @@ class _DiscussionScreenState extends State<DiscussionScreen> {
 
 
     }
+    else{
+      showSnack(context, 'Nothing was selected!');
+    }
 
     Future<void> clearCacheDirectory() async {
       // Get the cache directory path
@@ -205,6 +239,75 @@ class _DiscussionScreenState extends State<DiscussionScreen> {
         }
       }
     }
+  }
+  ///Function for uploading a file
+  void selectFileToUploadFile() async{
+    final result = await FilePicker.platform.pickFiles(allowMultiple: false);
+
+    if (result == null) {
+      return;
+    }
+    else {
+      file = File(result.files.single.path!);
+      // List<File> files = result.paths.map((path) => File(path!)).toList();
+      // print(result.files.single.path);
+      print(file);
+
+      setState(() {
+        // file = File(path);
+        uploadFile();
+      });
+
+      print("file============" + file.toString());
+      print("path============" + file!.path.toString());
+      // print("file============"+file!);
+
+      // uploadFilePhaseOneDio();
+    }
+    if (file!.path == null) {}
+  }
+  uploadFile() async {
+    final filename = path.basename(file!.path);
+    print('file path============> ${filename}');
+
+    FormData formData = FormData.fromMap({
+      "file": await MultipartFile.fromFile(
+        file!.path,
+        filename: filename,
+
+        // contentType:  MediaType("image", "jpg"), //add this
+      ),
+      'group_id': widget.gpId,
+    });
+
+    var res =
+    await CallApi().authenticatedUploadRequest(formData, 'upload_file');
+    if (res == null) {
+      // setState(() {
+      //   _isLoading = false;
+      //   // _not_found = true;
+      // });
+      // showSnack(context, 'No Network!');
+      print('Uploadh============> NULL');
+
+
+    } else {
+      var body = json.decode(res!.body);
+      print(body);
+
+      if (res.statusCode == 200) {
+        showSnack(context, 'File Uploaded Successfully');
+
+        setState(() {});
+      } else if (res.statusCode == 400) {
+        print('hhh');
+        // setState(() {
+        //   _isLoading = false;
+        //   _not_found = true;
+        // });
+      } else {}
+    }
+
   }
 }
 

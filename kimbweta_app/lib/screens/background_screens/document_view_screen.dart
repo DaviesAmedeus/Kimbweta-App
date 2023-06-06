@@ -4,7 +4,6 @@ import 'package:flutter/material.dart';
 import 'package:flutter_pdfview/flutter_pdfview.dart';
 import 'package:kimbweta_app/components/whiteboard.dart';
 import 'package:path/path.dart';
-// import 'package:syncfusion_flutter_pdfviewer/pdfviewer.dart';
 
 import '../../constants/constants.dart';
 class DocumentViewScreen extends StatefulWidget {

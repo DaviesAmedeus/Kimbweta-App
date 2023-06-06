@@ -17,7 +17,7 @@ class OurTextField extends StatelessWidget {
 
   OurTextField({
     required this.hintText,
-    required this.prefixIcon,
+    this.prefixIcon,
     this.suffixIcon,
     this.controller,
     this.validator,

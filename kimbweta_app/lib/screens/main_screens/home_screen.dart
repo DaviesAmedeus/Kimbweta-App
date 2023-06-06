@@ -1,9 +1,12 @@
 import 'dart:convert';
 
 import 'package:flutter/material.dart';
+import 'package:kimbweta_app/components/our_material_button.dart';
+import 'package:kimbweta_app/components/our_text_field.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import '../../api/api.dart';
-import '../../components/progressHUD.dart';
+import '../../components/custom_input_field.dart';
+import '../../components/loading_component.dart';
 import '../../components/snackbar.dart';
 import '../../constants/constants.dart';
 import '../background_screens/discussion_screen.dart';
@@ -18,16 +21,19 @@ class HomeScreen extends StatefulWidget {
 }
 
 class _HomeScreenState extends State<HomeScreen> {
-  var userData, next;
-  bool isApiCallProcess = false;
-
+   var userData, next;
+   bool checkStatus = false;
 
   List<MyGroup_Item>? my_group_data;
   List<JoinGroup_Item>? join_group_data;
 
+   TextEditingController groupNameController = TextEditingController();
+   TextEditingController descriptionController = TextEditingController();
 
 
-  @override
+
+
+   @override
   void initState() {
 
     _getUserInfo();
@@ -46,8 +52,6 @@ class _HomeScreenState extends State<HomeScreen> {
     print(userData);
     fetchMyGroupData();
     fetchJoinGroupData();
-
-
   }
 
   // void addGroup(String gpName, String? gpDesc) {
@@ -194,10 +198,11 @@ class _HomeScreenState extends State<HomeScreen> {
       // });
 
       setState(() {
+        checkStatus = true;
         my_group_data = _my_group_items;
       });
     } else {
-      showSnack(context, 'No network');
+      showSnack('No network', context);
       return [];
     }
   }
@@ -242,17 +247,20 @@ class _HomeScreenState extends State<HomeScreen> {
       return [];
     }
   }
-  @override
-  Widget build(BuildContext context) {
-    return ProgressHUD(child: _uiSetup(context),
-      inAsyncCall: isApiCallProcess,
-      opacity: 0.3,
-    );
-  }
+  // @override
+  // Widget build(BuildContext context) {
+  //   return ProgressHUD(child: _uiSetup(context),
+  //     inAsyncCall: isApiCallProcess,
+  //     opacity: 0.3,
+  //   );
+  // }
 
   @override
-  Widget _uiSetup(BuildContext context) {
-    return Scaffold(
+  Widget build(BuildContext context) {
+    if(checkStatus == false){
+     return const LoadingComponent();
+    }
+   return Scaffold(
       appBar: AppBar(
         leading: IconButton(
           icon: const Icon(Icons.logout),
@@ -293,7 +301,7 @@ class _HomeScreenState extends State<HomeScreen> {
                   )
               ),
 
-            ///Displays the discussions created
+              ///Displays the discussions created
               child: my_group_Component(),
 
               // child: ListView(
@@ -338,7 +346,6 @@ class _HomeScreenState extends State<HomeScreen> {
           )
         ],
       ),
-
       ///My FBA
       // floatingActionButton: FloatingActionButton(
       //   backgroundColor: Colors.blueGrey,
@@ -353,11 +360,10 @@ class _HomeScreenState extends State<HomeScreen> {
       /// Michael Michael modified FBA
       floatingActionButton: FloatingActionButton.extended(
         onPressed: () {
-          // Add your onPressed code here!
-          // selectFile();
-          // _add_Group_Dialog(context);
+
+          _add_Group_Dialog(context);
         },
-        label: const Text('Create Group'),
+        label: const Text('Group'),
         icon: const Icon(Icons.add),
         backgroundColor: kMainThemeAppColor,
       ),
@@ -394,8 +400,6 @@ class _HomeScreenState extends State<HomeScreen> {
                       description:my_group_data![index].description,
                       created_at:my_group_data![index].created_at
                   )));
-
-
             },
             child: ListTile(
               title: Text(my_group_data![index].name,
@@ -433,4 +437,88 @@ class _HomeScreenState extends State<HomeScreen> {
       );
     }
   }
+
+  void _add_Group_Dialog(BuildContext context) {
+    showDialog(
+        context: context,
+        builder: (context) {
+          return AlertDialog(
+            scrollable: true,
+            // title: const Text('Add Group'),
+            content: Form(
+              child: Column(
+                children: [
+
+                  Text('Create Group', style: TextStyle(color: kMainThemeAppColor,
+                  fontWeight: FontWeight.bold, fontSize: 20),),
+                  const SizedBox(
+                    height: 20,
+                  ),
+                  CustomInputField(
+                    controller: groupNameController,
+                    hintText: 'Group Name',
+                    textInputAction: TextInputAction.next,
+                  ),
+
+                  const SizedBox(
+                    height: 30,
+                  ),
+
+
+                  CustomInputField(
+                    controller: descriptionController,
+                    hintText: 'Description',
+                    textInputAction: TextInputAction.next,
+                  ),
+
+                  const SizedBox(
+                    height: 10,
+                  ),
+
+
+                  OurMaterialButton(label: 'Create', onPressed: (){
+                    _create_Group_API();
+                    Navigator.pop(context);
+                  })
+                ],
+              ),
+            ),
+          );
+        }
+    );
+  }
+   _create_Group_API() async {
+     var data = {
+       'name': groupNameController.text,
+       'description': descriptionController.text,
+       'created_by': userData['user']['id'],
+       'type': 'driver',
+     };
+
+     var res = await CallApi().authenticatedPostRequest(data, 'create_group');
+     if (res == null) {
+       // setState(() {
+       //   _isLoading = false;
+       //   // _not_found = true;
+       // });
+       // showSnack(context, 'No Network!');
+     } else {
+       var body = json.decode(res!.body);
+       print(body);
+
+       if (res.statusCode == 200) {
+         showSnack(context, 'Group Created Successfully');
+         groupNameController.clear;
+         descriptionController.clear;
+
+         setState(() {});
+       } else if (res.statusCode == 400) {
+         print('hhh');
+         // setState(() {
+         //   _isLoading = false;
+         //   _not_found = true;
+         // });
+       } else {}
+     }
+   }
 }

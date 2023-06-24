@@ -162,3 +162,22 @@ def GroupFiles(request, group_id):
     file = File.objects.values("id", "book").filter(group_id=group_id)
     # message = {'save': True}
     return Response(file)
+
+@api_view(["GET"])
+@permission_classes([AllowAny])
+def DeleteGroup(request, group_id):
+    try:
+        # Retrieve the item from the database
+        item = Group.objects.get(id=group_id)
+
+        # Delete the item
+        item.delete()
+
+        # Save the changes
+        item.save()
+
+        response = {"message": "Group deleted successfully!"}
+        return Response(response)
+    except Group.DoesNotExist:
+        response = {"message": "Item does not exist."}
+        return Response(response)

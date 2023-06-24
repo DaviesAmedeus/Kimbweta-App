@@ -173,7 +173,8 @@ class _JoinScreenState extends State<JoinScreen> {
       );
     } else if (join_group_data != null && join_group_data?.length == 0) {
       // No Data
-      return Text('No Data or No Group yet...');
+      return const Center(
+          child: Text('No Group Joined Yet!', style: TextStyle(color: kMainWhiteColor),));
     } else {
       return ListView.builder(
         itemCount:join_group_data!.length,

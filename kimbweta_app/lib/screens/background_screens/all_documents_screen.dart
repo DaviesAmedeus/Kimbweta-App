@@ -141,26 +141,13 @@ class _All_DocumentsScreenState extends State<All_DocumentsScreen> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        // automaticallyImplyLeading: true,
-        //   foregroundColor: Theme.of(context).hintColor,
-        //   backgroundColor: Colors.transparent,
-          // backgroundColor: Colors.white,
-          // foregroundColor: Colors.black,
+
           elevation: 0,
           title: const Text(
             'Documents',
             style: TextStyle(),
           ),
-          // leading: Container(
-          //     height: 50,
-          //     width: 50,
-          //     decoration: BoxDecoration(
-          //         borderRadius: BorderRadius.circular(15),
-          //         color: Colors.white,
-          //         image: const DecorationImage(
-          //             image: AssetImage("assets/logow.png"),
-          //             fit: BoxFit.cover)),
-          // ),
+
           actions: <Widget>[
             PopupMenuButton<int>(
               // onSelected: (item) => onSelected(context, item),
@@ -183,14 +170,6 @@ class _All_DocumentsScreenState extends State<All_DocumentsScreen> {
                       style: TextStyle(fontSize: 14),
                     ),
                   ),
-                  // PopupMenuItem(
-                  //   value: 2,
-                  //   child: Text(
-                  //     'Settings',
-                  //     style: TextStyle(fontSize: 14),
-                  //   ),
-                  // ),
-
                   PopupMenuItem(
                     value: 1,
                     child: Text(
@@ -255,12 +234,9 @@ class _All_DocumentsScreenState extends State<All_DocumentsScreen> {
                     String savePath =
                         await getExternalStoragePath() + '/$filename';
 
-                    // final savePath = '${directory.path}/kimbweta/';
-                    // String savePath = '/path/to/save/file.zip';
+
                     _download(context, fileUrl, savePath);
-                    // print('here =========');
-                    // print(i);
-                    // print(await CallApi.media_url + group_document_data![i].name);
+
                   },
                 ));
           });

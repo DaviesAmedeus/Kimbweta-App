@@ -22,14 +22,13 @@ class SignUpScreen extends StatefulWidget {
 class _SignUpScreenState extends State<SignUpScreen> {
   GlobalKey<FormState> globalFormKey = GlobalKey<FormState>();
 
-  bool isApiCallProcess = false;
+  // bool isApiCallProcess = false;
 
   ///Text Controllers
   TextEditingController userNameController = TextEditingController();
   TextEditingController userEmailController = TextEditingController();
   TextEditingController userPhoneController = TextEditingController();
   TextEditingController userPasswordController = TextEditingController();
-
   bool obsecureText = true;
 
 
@@ -39,15 +38,15 @@ class _SignUpScreenState extends State<SignUpScreen> {
   //   registerRequestModel = RegisterRequestModel();
   // }
 
-  @override
-  Widget build(BuildContext context) {
-    return ProgressHUD(child: _uiSetup(context),
-      inAsyncCall: isApiCallProcess,
-      opacity: 0.3,
-    );
-  }
+  // @override
+  // Widget build(BuildContext context) {
+  //   return ProgressHUD(child: _uiSetup(context),
+  //     inAsyncCall: isApiCallProcess,
+  //     opacity: 0.3,
+  //   );
+  // }
 
-  Widget _uiSetup(BuildContext context) {
+  Widget build(BuildContext context) {
 
     return Scaffold(
       backgroundColor: Colors.blueGrey,
@@ -221,7 +220,6 @@ class _SignUpScreenState extends State<SignUpScreen> {
                       if (validateAndSave()) {
                         _register();
                         setState(() {
-                          isApiCallProcess = false;
                         });
 
                       }
@@ -289,7 +287,6 @@ class _SignUpScreenState extends State<SignUpScreen> {
       var body = json.decode(res!.body);
       print(body);
       setState(() {
-        isApiCallProcess = true;
       });
 
       if (res.statusCode == 200) {
@@ -299,9 +296,6 @@ class _SignUpScreenState extends State<SignUpScreen> {
         // localStorage.setString("token", json.encode(body['access']));
         // localStorage.setString("phone_number", userNumberController.text);
 
-        // setState(() {
-        //   _isLoading = false;
-        // });
 
         Navigator.pushNamed(context, SignInScreen.id);
         showSnack(context, 'You Have registered!');

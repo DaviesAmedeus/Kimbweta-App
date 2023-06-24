@@ -2,7 +2,6 @@ import 'dart:convert';
 
 import 'package:flutter/material.dart';
 import 'package:kimbweta_app/constants/constants.dart';
-import 'package:kimbweta_app/screens/main_screens/home_screen.dart';
 import 'package:kimbweta_app/screens/screen_tabs.dart';
 import 'package:kimbweta_app/screens/authentication_screens/sign_up_screen.dart';
 import 'package:shared_preferences/shared_preferences.dart';
@@ -10,13 +9,11 @@ import '../../api/api.dart';
 import '../../components/link_button.dart';
 import '../../components/our_material_button.dart';
 import '../../components/our_text_field.dart';
-import '../../components/progressHUD.dart';
 import '../../components/snackbar.dart';
-
 
 class SignInScreen extends StatefulWidget {
   static String id = '/signIn';
-   const SignInScreen({Key? key}) : super(key: key);
+  const SignInScreen({Key? key}) : super(key: key);
 
   @override
   State<SignInScreen> createState() => _SignInScreenState();
@@ -31,14 +28,6 @@ class _SignInScreenState extends State<SignInScreen> {
   ///Text Controllers
   TextEditingController userNameController = TextEditingController();
   TextEditingController userPasswordController = TextEditingController();
-
-  // @override
-  // Widget build(BuildContext context) {
-  //   return ProgressHUD(child: _uiSetup(context),
-  //     inAsyncCall: isApiCallProcess,
-  //     opacity: 0.3,
-  //   );
-  // }
 
   @override
   Widget build(BuildContext context) {
@@ -61,18 +50,14 @@ class _SignInScreenState extends State<SignInScreen> {
               borderRadius: BorderRadius.only(
                 topLeft: Radius.circular(20.0),
                 topRight: Radius.circular(20.0),
-              )
-          ),
+              )),
 
           child: Form(
             key: globalFormKey,
             child: Column(
               mainAxisAlignment: MainAxisAlignment.center,
               children: [
-
-
-                ///Text field for email
-
+                ///Text field for username
                 OurTextField(
                   hintText: 'username',
                   obscuredText: false,
@@ -82,21 +67,17 @@ class _SignInScreenState extends State<SignInScreen> {
                   ),
                   controller: userNameController,
                   keyboardType: TextInputType.emailAddress,
-                  // onChanged: (input) {
-                  //   email = input!;
-                  // },
                   validator: (input) {
                     if (input!.isEmpty) {
                       return "Field should not be empty";
                     }
-
-                    // if (!input.contains("@")) {
-                    //   return "Email should be valid";
-                    // }
                     return null;
                   },
                 ),
-                const SizedBox(height: 20,),
+
+                const SizedBox(
+                  height: 20,
+                ),
 
                 ///Text field for password
                 OurTextField(
@@ -107,12 +88,20 @@ class _SignInScreenState extends State<SignInScreen> {
                       color: kMainWhiteColor,
                     ),
                     suffixIcon: InkWell(
-                        onTap: (){
+                        onTap: () {
                           setState(() {
                             obsecureText = !obsecureText;
                           });
                         },
-                        child: obsecureText ? const Icon(Icons.visibility_off, color: kMainWhiteColor,) : const Icon(Icons.visibility, color: kMainWhiteColor,)),
+                        child: obsecureText
+                            ? const Icon(
+                                Icons.visibility_off,
+                                color: kMainWhiteColor,
+                              )
+                            : const Icon(
+                                Icons.visibility,
+                                color: kMainWhiteColor,
+                              )),
                     controller: userPasswordController,
                     keyboardType: TextInputType.text,
                     // onChanged: (input) {
@@ -129,23 +118,29 @@ class _SignInScreenState extends State<SignInScreen> {
                       return null;
                     }),
 
-
                 ///sign In button
-                OurMaterialButton(label: 'Sign In', onPressed: (){
-                  if(validateAndSave()){
-                    _login();
-                    setState(() {
-                      isApiCallProcess = false;
-                    });
+                OurMaterialButton(
+                  label: 'Sign In',
+                  onPressed: () {
+                    if (validateAndSave()) {
+                      _login();
+                      setState(() {});
+                    }
+                  },
+                ),
 
-                  }
-                },),
+                ///Don't have an account button
+                LinkButton(
+                  normaltext: 'Don\'t have an account?',
+                  linkedText: 'Sign Up',
+                  onTap: () {
+                    Navigator.pushNamed(context, SignUpScreen.id);
+                  },
+                ),
 
-                ///Dont have an account button
-                LinkButton(normaltext: 'Dont have an account?', linkedText: 'Sign Up', onTap: (){
-                  Navigator.pushNamed(context, SignUpScreen.id);
-                },),
-                const SizedBox(height: 20,),
+                const SizedBox(
+                  height: 20,
+                ),
               ],
             ),
           ),
@@ -164,81 +159,47 @@ class _SignInScreenState extends State<SignInScreen> {
   }
 
   void _login() async {
-    // setState(() {
-    //   _isLoading = true;
-    // });
 
-    // var number = userNumberController.text;
-    // print(_countryCodes);
-    // var code = _selectedCountryCode
-    //     .toString()
-    //     .substring(1, _selectedCountryCode.toString().length);
-    // if (number.length == 10) {
-    //   number = number.substring(1, number.length);
-    // }
-    // var cellphone = code + number;
-
-// *************************************************
     var data = {
       'username': userNameController.text,
       'password': userPasswordController.text,
     };
 
-    print('xxxxxxxx-------AWESOMEEEEEEEEEEEEEEEEEEE------xxxxxxxxx');
+    print('--------------DATA REQUIRED TO LOGIN------------');
     print(data);
+    print('------------------------------------------------');
 
+
+    ///Sending the request to the login API function.
     var res = await CallApi().authenticatedPostRequest(data, 'auth/login');
 
-    if (res == null) {
-      print('NULLLLLLLLLLLLLLLLLL');
-      // setState(() {
-      //   _isLoading = false;
-      //   // _not_found = true;
-      // });
-      // showSnack(context, 'No Network!');
-    } else {
-      setState(() {
-        isApiCallProcess = true;
-      });
+
+    if (res != null){
 
       var body = json.decode(res!.body);
-      print(body);
+
 
       if (body['msg'] == 'success') {
         SharedPreferences localStorage = await SharedPreferences.getInstance();
-        // localStorage.setString("token", body['token']);
         localStorage.setString("user", json.encode(body));
         localStorage.setString("token", json.encode(body['token']));
-        // localStorage.setString("stationary", json.encode(body['stationary']));
-        // localStorage.setString("phone_number", userNumberController.text);
 
-        // setState(() {
-        //   _isLoading = false;
-        // });
-
-        // Navigator.push(
-        //     context, MaterialPageRoute(builder: (context) => const HomeScreen()));
 
         Navigator.pushNamed(context, ScreenTabs.id);
-
       } else if (body['msg'] == 'Fail') {
-        // print('hhh');
+
         showSnack(context, body['reason']);
 
-        // setState(() {
-        //   _isLoading = false;
-        //   _not_found = true;
-        // });
+
       } else {}
+    } else
+    {
+      print('------------------------------------------------');
+      print('SIGN RESPONSE IS NULL');
+      print('------------------------------------------------');
     }
+
 
     // ignore: avoid_print
   }
 }
-
-
-
-
-
-
-

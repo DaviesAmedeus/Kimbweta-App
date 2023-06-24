@@ -1,30 +1,29 @@
 import 'dart:convert';
 import 'package:dio/dio.dart';
-
 import 'package:flutter/material.dart';
 import 'package:http/http.dart' as http;
 import 'package:kimbweta_app/screens/authentication_screens/sign_in_screen.dart';
-// import 'package:screen_share/auth.dart';
-// import 'package:screen_share/utils/snackbar.dart';
 import 'package:shared_preferences/shared_preferences.dart';
-
 import '../components/snackbar.dart';
 
 class CallApi {
   // static final String url = 'https://gnmcargo.com/cargo/';
   // static final String url = 'http://192.168.100.21:8000/cargo/';
-
   // static const String url = 'http://192.168.155.135:8000/';
-  static const String url = 'http://192.168.43.93:8000/';
-  static const String media_url = 'http://192.168.43.93:8000/media/';
   // static const String flask_microservice_url = 'http://68.183.5.97:3000/';
+  static const String media_url = 'http://192.168.43.93:8000/media/';
+
+  static const String url = 'http://192.168.43.93:8000/';
   var token = '';
 
-  // ignore: unused_element
+///don't delete this comment below
+//   ignore: unused_element
   getJWTToken({context}) async {
     SharedPreferences sharedPreferences = await SharedPreferences.getInstance();
     var token = sharedPreferences.getString('refresh_token');
-    if (token != null) {
+
+    if(token != null)
+    {
       var data = {"refresh": token};
       var res = await http.post(
           Uri.parse(
@@ -35,6 +34,7 @@ class CallApi {
             'Content-type': 'application/json',
             'Accept': 'application/json',
           });
+
       if (res.statusCode == 200) {
         var body = json.decode(res.body);
         sharedPreferences.setString("token", body['access']);
@@ -57,12 +57,11 @@ class CallApi {
       sharedPreferences.remove('notifications');
       try {
         showSnack(context, 'Unauthorized, please login again');
-        // Navigator.push(
-        //     context, MaterialPageRoute(builder: (context) => const LoginScreen()));
         Navigator.pushNamed(context, SignInScreen.id);
       } catch (e) {}
     }
   }
+
 
   _getNormalToken(context) async {
     SharedPreferences sharedPreferences = await SharedPreferences.getInstance();
@@ -73,15 +72,20 @@ class CallApi {
       await _navigateHome(context: context);
     }
   }
-
   getToken(context) async {
     _getNormalToken(context);
   }
 
+
+
   evaluateResponseData(res, context, {login = false}) {
-    print('>>>>>>>>>>>>>XXXXVVXXX>>>>>>>>>>>${res.statusCode}');
+
+
 
     if (res.statusCode == 200) {
+      print('--------------------SIGN/SIGN UP STATUS------------------------');
+      print('${res.statusCode}');
+      print('--------------------SIGN/SIGN UP STATUS------------------------');
       return res;
     } else if (res.statusCode == 500) {
       //--- Push to a page with 500 status, and code for troubleshoot
@@ -104,6 +108,7 @@ class CallApi {
     }
   }
 
+  ///api used to sigin / out
   authenticatedPostRequest(data, apiUrl, {context}) async {
 
     var fullUrl = url + apiUrl;
@@ -115,6 +120,7 @@ class CallApi {
           ),
           body: jsonEncode(data),
           headers: _setHeaders());
+
 
       return evaluateResponseData(res, context);
     } catch (e) {
@@ -152,7 +158,10 @@ class CallApi {
     await getToken(context);
     var fullUrl = url + apiUrl;
     try {
-      var res = await http.delete(Uri.parse(fullUrl), headers: _setHeaders());
+      var res = await http.get(Uri.parse(fullUrl), headers: {
+        'Content-Type': 'application/json',
+        'Vary': 'Accept'
+      });
       return evaluateResponseData(res, context);
     } catch (e) {
       showSnack(context, 'No network');
@@ -257,10 +266,13 @@ class CallApi {
     }
   }
 
+  ///Headers
   _setHeaders() => {
         'Content-type': 'application/json',
         'Accept': 'application/json',
         'Authorization': token
       };
+
+
 }
 

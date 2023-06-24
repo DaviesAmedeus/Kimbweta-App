@@ -12,5 +12,4 @@ urlpatterns = [
     path('created_group/<int:user_id>', CreatedGroup),
     path('group_info/<int:group_id>', GroupInfo),
     path('deactivate_group/<int:group_id>', DeactivateGroup),
-    path('delete_group/<int:group_id>', DeleteGroup),
 ]

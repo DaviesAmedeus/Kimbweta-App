@@ -34,7 +34,7 @@ class _ScreenTabsState extends State<ScreenTabs> {
     }
   }
 
-  int _currentIndex = 0;
+   int? _currentIndex = 0;
 
   final _tabs= [
     const HomeScreen(),
@@ -45,11 +45,11 @@ class _ScreenTabsState extends State<ScreenTabs> {
   @override
   Widget build(BuildContext context) {
     return  Scaffold(
-      body:    _tabs[_currentIndex],
+      body:    _tabs[_currentIndex!],
       bottomNavigationBar: BottomNavigationBar(
           selectedItemColor: Colors.white,
           backgroundColor: Colors.blueGrey,
-          currentIndex: _currentIndex,
+          currentIndex: _currentIndex!,
           showUnselectedLabels: false,
 
           items: const [

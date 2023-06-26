@@ -11,6 +11,7 @@ import '../../components/snackbar.dart';
 import '../../constants/constants.dart';
 import '../../models/discussion_group.dart';
 import '../background_screens/joined_discussion_screen.dart';
+
 class JoinScreen extends StatefulWidget {
   const JoinScreen({Key? key}) : super(key: key);
 
@@ -22,10 +23,15 @@ class _JoinScreenState extends State<JoinScreen> {
   var userData, next;
   bool checkStatus = false;
   List<JoinGroup_Item>? join_group_data;
-  List<MyGroup_Item>? my_group_data;
+  ScrollController _scrollController = ScrollController();
+
+  @override
+  void dispose() {
+    _scrollController.dispose();
+    super.dispose();
+  }
 
   TextEditingController codeController = TextEditingController();
-
 
   @override
   void initState() {
@@ -46,34 +52,39 @@ class _JoinScreenState extends State<JoinScreen> {
   }
 
   fetchJoinGroupData() async {
-    // var customer = userData['id'].toString();
     String url = 'joined_group/' + userData['user']['id'].toString();
+    // var customer = userData['id'].toString();
     // if (next != null) {
     //   url = url_format(next);
     // }
     var res = await CallApi().authenticatedGetRequest(url, context: context);
 
-    print(res);
+    // print(res);
     if (res != null) {
       var body = json.decode(res.body);
       print(body);
-      var join_groupItensJson = body;
-      List<JoinGroup_Item> _join_group_items = [];
-      if (next != null) {
-        _join_group_items = join_group_data!;
-      }
 
-      for (var f in join_groupItensJson) {
+      var theJoinGroups = body;
+      List<JoinGroup_Item> _join_group_items = [];
+      // if (next != null) {
+      //   _join_group_items = join_group_data!;
+      // }
+
+      for (var field in theJoinGroups) {
         JoinGroup_Item join_group_items = JoinGroup_Item(
-          f['id'].toString(),
-          f['name'].toString(),
-          f['code'].toString(),
-          f['description'].toString(),
-          f['created_at'].toString(),
+          field['id'].toString(),
+          field['name'].toString(),
+          field['code'].toString(),
+          field['description'].toString(),
+          field['created_at'].toString(),
         );
         _join_group_items.add(join_group_items);
       }
-      print('>>>>>>>>>>>>>>HAHAHA>>>>>>>>>>>${_join_group_items.length}');
+
+      print('---------------MY JOINED GROUP ITEMS--------------------');
+      print('------------------${_join_group_items.length}------------');
+      print('------------------------------------------------');
+
       // setState(() {
       //   loading = false;
       // });
@@ -87,9 +98,10 @@ class _JoinScreenState extends State<JoinScreen> {
       return [];
     }
   }
+
   @override
   Widget build(BuildContext context) {
-    if(checkStatus == false){
+    if (checkStatus == false) {
       return const LoadingComponent();
     }
     return Scaffold(
@@ -97,26 +109,27 @@ class _JoinScreenState extends State<JoinScreen> {
         leading: IconButton(
           icon: const Icon(Icons.logout),
           tooltip: "Log out",
-          onPressed: (){
+          onPressed: () {
             Navigator.pop(context);
           },
         ),
-        title: (join_group_data!.length == 1) ? Text('[ You are in  ${join_group_data!.length} Group]',style: const TextStyle(
-            fontFamily: 'Montserrat2',
-            color: kDiscussionDescriptionColor,
-            fontSize: 15,
-            fontWeight: FontWeight.bold
-
-        ),
-        )
-            : Text('[  You are in  ${join_group_data!.length}  Groups  ]',style: const TextStyle(
-            fontFamily: 'Montserrat2',
-            color: kDiscussionDescriptionColor,
-            fontSize: 15,
-            fontWeight: FontWeight.bold
-
-        ),
-        ),
+        title: (join_group_data!.length == 1)
+            ? Text(
+                '[ You are in  ${join_group_data!.length} Group]',
+                style: const TextStyle(
+                    fontFamily: 'Montserrat2',
+                    color: kDiscussionDescriptionColor,
+                    fontSize: 15,
+                    fontWeight: FontWeight.bold),
+              )
+            : Text(
+                '[  You are in  ${join_group_data!.length}  Groups  ]',
+                style: const TextStyle(
+                    fontFamily: 'Montserrat2',
+                    color: kDiscussionDescriptionColor,
+                    fontSize: 15,
+                    fontWeight: FontWeight.bold),
+              ),
       ),
       backgroundColor: Colors.blueGrey,
       body: Column(
@@ -137,17 +150,14 @@ class _JoinScreenState extends State<JoinScreen> {
                   borderRadius: BorderRadius.only(
                     topLeft: Radius.circular(20.0),
                     topRight: Radius.circular(20.0),
-                  )
-              ),
+                  )),
 
               ///Displays the discussions created
               child: join_group_Component(),
-
             ),
           )
         ],
       ),
-
 
       /// Michael Michael modified FBA
       floatingActionButton: FloatingActionButton.extended(
@@ -159,8 +169,6 @@ class _JoinScreenState extends State<JoinScreen> {
         label: const Text('Join Group'),
         backgroundColor: kMainThemeAppColor,
       ),
-
-
     );
   }
 
@@ -174,62 +182,68 @@ class _JoinScreenState extends State<JoinScreen> {
     } else if (join_group_data != null && join_group_data?.length == 0) {
       // No Data
       return const Center(
-          child: Text('No Group Joined Yet!', style: TextStyle(color: kMainWhiteColor),));
+          child: Text(
+        'No Group Joined Yet!',
+        style: TextStyle(color: kMainWhiteColor),
+      ));
     } else {
       return ListView.builder(
-        itemCount:join_group_data!.length,
-        itemBuilder:(context, index)=> Card(
-          color: Colors.transparent,
-          margin: const EdgeInsets.symmetric(vertical: 3, horizontal: 6),
-          elevation: 1,
-          child: InkWell(
-            onTap: (){
-              Navigator.push(context, MaterialPageRoute(
-                  builder: (context)=> JoinedDiscussionScreen(
-                      gpId: join_group_data![index].id,
-                      name:join_group_data![index].name,
-                      code:join_group_data![index].code,
-                      description:join_group_data![index].description,
-                      created_at:join_group_data![index].created_at
-                )));
-            },
-            child: ListTile(
-              title: Text(join_group_data![index].name,
-                style: const TextStyle(
-                  color: kMainWhiteColor,
-                  letterSpacing: 2,
-                  fontSize: 18,
-                  fontWeight: FontWeight.bold,
+          itemCount: join_group_data!.length,
+          controller: _scrollController,
+          itemBuilder: (context, index) {
+            int reverseIndex = join_group_data!.length - 1 - index;
 
+            return Card(
+              color: Colors.transparent,
+              margin: const EdgeInsets.symmetric(vertical: 3, horizontal: 6),
+              elevation: 1,
+              child: InkWell(
+                onTap: () {
+                  Navigator.push(
+                    context,
+                    MaterialPageRoute(
+                      builder: (context) => JoinedDiscussionScreen(
+                          gpId: join_group_data![reverseIndex].id,
+                          name: join_group_data![reverseIndex].name,
+                          code: join_group_data![reverseIndex].code,
+                          description:
+                              join_group_data![reverseIndex].description,
+                          created_at:
+                              join_group_data![reverseIndex].created_at),
+                    ),
+                  );
+                },
+                child: ListTile(
+                  title: Text(
+                    join_group_data![reverseIndex].name,
+                    style: const TextStyle(
+                      color: kMainWhiteColor,
+                      letterSpacing: 2,
+                      fontSize: 18,
+                      fontWeight: FontWeight.bold,
+                    ),
+                    maxLines: 1,
+                    overflow: TextOverflow.ellipsis,
+                  ),
+                  subtitle: Text(
+                    '${join_group_data![reverseIndex].description}',
+                    style: const TextStyle(
+                        color: Colors.white24,
+                        fontFamily: 'Montserrat2',
+                        fontWeight: FontWeight.bold,
+                        letterSpacing: 1,
+                        fontSize: 9),
+                  ),
+                  // trailing: Text('00:00'),
+                  leading: Image.asset('images/group_logo.png'),
                 ),
-                maxLines: 1,
-                overflow: TextOverflow.ellipsis,
-
-
               ),
-              subtitle: Text('${join_group_data![index].description}',
-                style: const TextStyle(
-                    color: Colors.white24,
-                    fontFamily: 'Montserrat2',
-                    fontWeight: FontWeight.bold,
-                    letterSpacing: 1,
-                    fontSize: 9
-                ),
-              ),
-
-              trailing: Text('00:00'),
-              leading: Image.asset('images/group_logo.png'),
-
-            ),
-          ),
-
-        ),
-
-
-      );
+            );
+          });
     }
   }
 
+  ///Our Pop Dialog
   _join_Group_Dialog(BuildContext context) {
     showDialog(
         context: context,
@@ -250,13 +264,20 @@ class _JoinScreenState extends State<JoinScreen> {
                     height: 2,
                   ),
 
-
-
-
-                  OurMaterialButton(label: 'Join', onPressed: (){
-                    _joinGroup_API();
-                    Navigator.pop(context);
-                  })
+                  OurMaterialButton(
+                      label: 'Join',
+                      onPressed: () {
+                        _joinGroup_API();
+                        fetchJoinGroupData();
+                        setState(() {
+                          _scrollController.animateTo(
+                            0.0,
+                            duration: Duration(milliseconds: 300),
+                            curve: Curves.easeInOut,
+                          );
+                        });
+                        Navigator.pop(context);
+                      })
                 ],
               ),
             ),
@@ -264,6 +285,7 @@ class _JoinScreenState extends State<JoinScreen> {
         });
   }
 
+  ///Function to join a crated group
   _joinGroup_API() async {
     var data = {
       'user_id': userData['user']['id'],
@@ -301,5 +323,3 @@ class _JoinScreenState extends State<JoinScreen> {
     }
   }
 }
-
-

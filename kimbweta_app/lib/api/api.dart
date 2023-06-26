@@ -158,7 +158,7 @@ class CallApi {
     await getToken(context);
     var fullUrl = url + apiUrl;
     try {
-      var res = await http.get(Uri.parse(fullUrl), headers: {
+      var res = await http.delete(Uri.parse(fullUrl), headers: {
         'Content-Type': 'application/json',
         'Vary': 'Accept'
       });

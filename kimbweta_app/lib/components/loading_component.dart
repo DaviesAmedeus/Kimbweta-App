@@ -9,16 +9,9 @@ class LoadingComponent extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Center(
-      child: Row(
-        mainAxisAlignment: MainAxisAlignment.center,
-        children: [
-          Image.asset('images/group_logo.png', scale: 3,),
-          const Text('Loading...', style: TextStyle(
-            color: kMainThemeAppColor,
-            fontSize: 25,
-          ),),
-        ],
-      ),
+
+      child:  CircularProgressIndicator(),
     );
   }
 }
+

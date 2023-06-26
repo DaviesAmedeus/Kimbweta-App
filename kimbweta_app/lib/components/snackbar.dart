@@ -6,8 +6,9 @@ void showSnack(context, message) {
   if (context != null) {
     final snackBar = SnackBar(
       content: Text(message.toString()),
-      backgroundColor: kMainThemeAppColor,
-      duration: Duration(seconds: 5),
+      // shape: const CircleBorder(eccentricity: 76),
+      // backgroundColor: kMainThemeAppColor,
+      duration: Duration(seconds: 2),
 
     );
     ScaffoldMessenger.of(context).showSnackBar(snackBar);

@@ -24,7 +24,6 @@ class _HomeScreenState extends State<HomeScreen> {
   bool checkStatus = false;
 
   List<MyGroup_Item>? my_group_data;
-  List<JoinGroup_Item>? join_group_data;
   ScrollController _scrollController = ScrollController();
 
   @override
@@ -55,38 +54,44 @@ class _HomeScreenState extends State<HomeScreen> {
     print('-------PRINTING USER DATA-----------------------');
     print(userData);
     print('------------------------------------------------');
+
     fetchMyGroupData();
     // fetchJoinGroupData();
   }
-  _delete_Group_API(var groupId) async{
 
-    print('---------------------------GROUP ID SENT:: ${groupId}--------------------');
-    print('---------------------------SENT RUN TYPE:: ${groupId.runtimeType}--------------------');
+  ///Function to delete a group
+  _delete_Group_API(var groupId) async {
+    print(
+        '---------------------------GROUP ID SENT:: ${groupId}--------------------');
+    print(
+        '---------------------------SENT RUN TYPE:: ${groupId.runtimeType}--------------------');
     String url = 'delete_group/${groupId}';
 
     var res = await CallApi().authenticatedDeleteRequest(url, context: context);
-    if(res != null){
-      print('---------------------------REQUEST SENT:: ${res.statusCode}--------------------');
+    if (res != null) {
+      print(
+          '---------------------------REQUEST SENT:: ${res.statusCode}--------------------');
 
-      try{
-        if(res.statusCode == 200){
-          print('------------------------>>>>>>---REQUEST SENT:: ${res.body}--------------------');
+      try {
+        if (res.statusCode == 200) {
+          print(
+              '------------------------>>>>>>---REQUEST SENT:: ${res.body}--------------------');
           fetchMyGroupData();
-        } else{
+        } else {
           print('---------------------------STATUS CODE--------------------');
           print('NULLLLL');
           print('----------------------------------------------------------');
-
         }
-      }catch(e){
+      } catch (e) {
         print(e);
       }
     }
-
   }
+
+  ///function to fetch group data from the server
   fetchMyGroupData() async {
-    // var customer = userData['id'].toString();
     String url = 'created_group/' + userData['user']['id'].toString();
+    // var customer = userData['id'].toString();
     // if (next != null) {
     //   url = url_format(next);
     // }
@@ -117,7 +122,7 @@ class _HomeScreenState extends State<HomeScreen> {
         _my_group_items.add(group);
       }
 
-      print('---------------MY GROUP ITEMS--------------------');
+      print('---------------MY CREATED GROUP ITEMS--------------------');
       print(_my_group_items.length);
       print('------------------------------------------------');
       // setState(() {
@@ -138,6 +143,9 @@ class _HomeScreenState extends State<HomeScreen> {
   Widget build(BuildContext context) {
     if (checkStatus == false) {
       return const LoadingComponent();
+
+
+
     }
     return Scaffold(
       appBar: AppBar(
@@ -224,16 +232,16 @@ class _HomeScreenState extends State<HomeScreen> {
               child: InkWell(
                 onTap: () {
                   Navigator.push(
-                      context,
-                      MaterialPageRoute(
-                          builder: (context) => DiscussionScreen(
-                              gpId: my_group_data![reverseIndex].id,
-                              name: my_group_data![reverseIndex].name,
-                              code: my_group_data![reverseIndex].code,
-                              description:
-                                  my_group_data![reverseIndex].description,
-                              created_at:
-                                  my_group_data![reverseIndex].created_at)));
+                    context,
+                    MaterialPageRoute(
+                      builder: (context) => DiscussionScreen(
+                          gpId: my_group_data![reverseIndex].id,
+                          name: my_group_data![reverseIndex].name,
+                          code: my_group_data![reverseIndex].code,
+                          description: my_group_data![reverseIndex].description,
+                          created_at: my_group_data![reverseIndex].created_at),
+                    ),
+                  );
                 },
                 child: ListTile(
                   title: Text(
@@ -273,6 +281,7 @@ class _HomeScreenState extends State<HomeScreen> {
     }
   }
 
+  ///Our Pop Dialog
   void _add_Group_Dialog(BuildContext context) {
     showDialog(
         context: context,
@@ -338,6 +347,7 @@ class _HomeScreenState extends State<HomeScreen> {
         });
   }
 
+  ///Function to create a group
   _create_Group_API() async {
     var data = {
       'name': groupNameController.text,
@@ -372,7 +382,4 @@ class _HomeScreenState extends State<HomeScreen> {
       } else {}
     }
   }
-
-
-
 }

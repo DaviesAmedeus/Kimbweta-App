@@ -2,6 +2,7 @@ import 'dart:convert';
 
 import 'package:flutter/material.dart';
 import 'package:kimbweta_app/components/our_material_button.dart';
+import 'package:kimbweta_app/components/our_round_button.dart';
 import 'package:kimbweta_app/components/our_text_field.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import '../../api/api.dart';
@@ -22,6 +23,8 @@ class HomeScreen extends StatefulWidget {
 class _HomeScreenState extends State<HomeScreen> {
   var userData, next;
   bool checkStatus = false;
+
+  var deleting_id;
 
   List<MyGroup_Item>? my_group_data;
   ScrollController _scrollController = ScrollController();
@@ -196,7 +199,7 @@ class _HomeScreenState extends State<HomeScreen> {
       /// FBA
       floatingActionButton: FloatingActionButton.extended(
         onPressed: () {
-          _add_Group_Dialog(context);
+          _add_Group_Dialog(context, null);
         },
         label: const Text('Group'),
         icon: const Icon(Icons.add),
@@ -266,12 +269,15 @@ class _HomeScreenState extends State<HomeScreen> {
                   ),
                   leading: Image.asset('images/group_logo.png'),
                   trailing: IconButton(
-                    icon: Icon(
+                    icon: const Icon(
                       Icons.delete,
                       color: kMainThemeAppColor,
                     ),
                     onPressed: () {
-                      _delete_Group_API(my_group_data![reverseIndex].id);
+                      deleting_id = my_group_data![reverseIndex].id;
+
+                      _add_Group_Dialog(context, deleting_id);
+                      // _delete_Group_API(my_group_data![reverseIndex].id);
                     },
                   ),
                 ),
@@ -282,7 +288,7 @@ class _HomeScreenState extends State<HomeScreen> {
   }
 
   ///Our Pop Dialog
-  void _add_Group_Dialog(BuildContext context) {
+  void _add_Group_Dialog(BuildContext context, String? gpId) {
     showDialog(
         context: context,
         builder: (context) {
@@ -290,9 +296,35 @@ class _HomeScreenState extends State<HomeScreen> {
             scrollable: true,
             // title: const Text('Add Group'),
             content: Form(
-              child: Column(
+              child: (gpId != null) ? Column(
                 children: [
-                  Text(
+                  const Text(
+                    'Thia action will remove everyone else. Are you sure?',
+                    style: TextStyle(
+                        color: Colors.red,
+                        fontWeight: FontWeight.bold,
+                        fontSize: 20,
+
+                    ),
+                  ),
+                  OurMaterialButton(
+                      label: 'Remove',
+                      onPressed: () {
+                        _delete_Group_API(gpId);
+                        setState(() {
+                          _scrollController.animateTo(
+                            0.0,
+                            duration: const Duration(milliseconds: 300),
+                            curve: Curves.easeInOut,
+                          );
+                        });
+                        Navigator.pop(context);
+
+                      })
+                ],
+              ) : Column(
+                children: [
+                  const Text(
                     'Create Group',
                     style: TextStyle(
                         color: kMainThemeAppColor,
@@ -326,7 +358,7 @@ class _HomeScreenState extends State<HomeScreen> {
                         setState(() {
                           _scrollController.animateTo(
                             0.0,
-                            duration: Duration(milliseconds: 300),
+                            duration: const Duration(milliseconds: 300),
                             curve: Curves.easeInOut,
                           );
                         });
@@ -341,7 +373,7 @@ class _HomeScreenState extends State<HomeScreen> {
                         //     )));
                       })
                 ],
-              ),
+              )
             ),
           );
         });

@@ -1,6 +1,10 @@
+import 'dart:io';
+import 'dart:typed_data';
+
 import 'package:flutter/material.dart';
 import 'package:flutter_state_notifier/flutter_state_notifier.dart';
 import 'package:kimbweta_app/constants/constants.dart';
+import 'package:path_provider/path_provider.dart';
 import 'package:scribble/scribble.dart';
 
 class WhiteboardScreen extends StatefulWidget {
@@ -27,7 +31,12 @@ class _WhiteboardScreenState extends State<WhiteboardScreen> {
         leading: IconButton(
           icon: const Icon(Icons.save),
           tooltip: "Save to Image",
-          onPressed: () => _saveImage(context),
+          onPressed: () {
+            // _saveImage(context);
+
+            saveAndDisplayImage(context);
+
+          }
         ),
         actions: [
           // IconButton(onPressed: (){
@@ -70,19 +79,52 @@ class _WhiteboardScreenState extends State<WhiteboardScreen> {
     );
   }
 
-  Future<void> _saveImage(BuildContext context) async {
+  Future<void> saveAndDisplayImage(BuildContext context) async {
     final image = await notifier.renderImage();
+    _saveImage(context, image.buffer.asUint8List());
+  }
+///Old image save function
+  // Future<void> _saveImage(BuildContext context) async {
+  //   final image = await notifier.renderImage();
+  //   showDialog(
+  //     context: context,
+  //     builder: (context) => AlertDialog(
+  //       title: const Text("Your Image"),
+  //       content: Image.memory(
+  //         image.buffer.asUint8List(),
+  //       ),
+  //     ),
+  //   );
+  // }
+
+  ///New Image save function
+  Future<void> _saveImage(BuildContext context, Uint8List imageBytes) async {
+    // Get the directory where the image will be saved
+    // Directory appDir = await getApplicationDocumentsDirectory();
+    Directory? picturesDir = await getExternalStorageDirectory();
+    String fileName = "your_image.png"; // Customize the file name and extension as needed
+
+    // Create a new file in the app directory
+    File imageFile = File('${picturesDir!.path}/$fileName');
+
+    // Write the image bytes to the file
+    await imageFile.writeAsBytes(imageBytes);
+
+    // Show a confirmation dialog
     showDialog(
       context: context,
       builder: (context) => AlertDialog(
-        title: const Text("Your Image"),
-        content: Image.memory(
-          image.buffer.asUint8List(),
-        ),
+        title: const Text("Image Saved"),
+        content:  Text("Your image has been saved inside '${imageFile.path.toString()}"),
+        actions: [
+          TextButton(
+            onPressed: () => Navigator.of(context).pop(),
+            child: const Text("OK"),
+          ),
+        ],
       ),
     );
   }
-
   Widget _buildStrokeToolbar(BuildContext context) {
     return StateNotifierBuilder<ScribbleState>(
       stateNotifier: notifier,

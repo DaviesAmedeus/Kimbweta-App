@@ -10,7 +10,7 @@ import '../../components/loading_component.dart';
 import '../../components/snackbar.dart';
 import '../../constants/constants.dart';
 import '../../models/discussion_group.dart';
-import '../background_screens/joined_discussion_screen.dart';
+import '../background_screens/member_discussion_screen.dart';
 
 class JoinScreen extends StatefulWidget {
   const JoinScreen({Key? key}) : super(key: key);
@@ -52,11 +52,8 @@ class _JoinScreenState extends State<JoinScreen> {
   }
 
   fetchJoinGroupData() async {
-    String url = 'joined_group/' + userData['user']['id'].toString();
-    // var customer = userData['id'].toString();
-    // if (next != null) {
-    //   url = url_format(next);
-    // }
+    String url = 'joined_group/${userData['user']['id'].toString()}';
+    
     var res = await CallApi().authenticatedGetRequest(url, context: context);
 
     // print(res);
@@ -85,9 +82,7 @@ class _JoinScreenState extends State<JoinScreen> {
       print('------------------${_join_group_items.length}------------');
       print('------------------------------------------------');
 
-      // setState(() {
-      //   loading = false;
-      // });
+      
 
       setState(() {
         checkStatus = true;
@@ -152,8 +147,8 @@ class _JoinScreenState extends State<JoinScreen> {
                     topRight: Radius.circular(20.0),
                   )),
 
-              ///Displays the discussions created
-              child: join_group_Component(),
+              ///Calls discussions created
+              child: joinGroupComponent(),
             ),
           )
         ],
@@ -172,11 +167,11 @@ class _JoinScreenState extends State<JoinScreen> {
     );
   }
 
-  join_group_Component() {
+  joinGroupComponent() {
     print("----------------");
     print(join_group_data!.length);
     if (join_group_data == null) {
-      return Center(
+      return const Center(
         child: Text('No Network or Connection...'),
       );
     } else if (join_group_data != null && join_group_data?.length == 0) {
@@ -202,14 +197,12 @@ class _JoinScreenState extends State<JoinScreen> {
                   Navigator.push(
                     context,
                     MaterialPageRoute(
-                      builder: (context) => JoinedDiscussionScreen(
+                      builder: (context) => MemberDiscussionScreen(
                           gpId: join_group_data![reverseIndex].id,
                           name: join_group_data![reverseIndex].name,
                           code: join_group_data![reverseIndex].code,
-                          description:
-                              join_group_data![reverseIndex].description,
-                          created_at:
-                              join_group_data![reverseIndex].created_at),
+                          description: join_group_data![reverseIndex].description,
+                          createdAt: join_group_data![reverseIndex].created_at),
                     ),
                   );
                 },
@@ -272,7 +265,7 @@ class _JoinScreenState extends State<JoinScreen> {
                         setState(() {
                           _scrollController.animateTo(
                             0.0,
-                            duration: Duration(milliseconds: 300),
+                            duration: const Duration(milliseconds: 300),
                             curve: Curves.easeInOut,
                           );
                         });

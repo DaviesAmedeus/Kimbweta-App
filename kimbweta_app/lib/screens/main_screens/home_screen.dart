@@ -10,7 +10,7 @@ import '../../components/custom_input_field.dart';
 import '../../components/loading_component.dart';
 import '../../components/snackbar.dart';
 import '../../constants/constants.dart';
-import '../background_screens/discussion_screen.dart';
+import '../background_screens/admin_discussion_screen.dart';
 import 'package:kimbweta_app/models/discussion_group.dart';
 
 class HomeScreen extends StatefulWidget {
@@ -190,7 +190,7 @@ class _HomeScreenState extends State<HomeScreen> {
                   )),
 
               ///Displays the discussions created
-              child: my_group_Component(),
+              child: myGroupComponent(),
             ),
           )
         ],
@@ -199,7 +199,7 @@ class _HomeScreenState extends State<HomeScreen> {
       /// FBA
       floatingActionButton: FloatingActionButton.extended(
         onPressed: () {
-          _add_Group_Dialog(context, null);
+          _our_Pop_up_Dialog(context, null);
         },
         label: const Text('Group'),
         icon: const Icon(Icons.add),
@@ -208,10 +208,10 @@ class _HomeScreenState extends State<HomeScreen> {
     );
   }
 
-  my_group_Component() {
+/// Function That Displays List of Groups Created
+  myGroupComponent() {
     if (my_group_data == null) {
-      // print(my_group_data);
-      // print("---------------------");
+
       return const Center(
         child: Text('No Network or Connection...'),
       );
@@ -221,7 +221,7 @@ class _HomeScreenState extends State<HomeScreen> {
         child: Text('No Group created Yet!',
             style: TextStyle(color: kMainWhiteColor)),
       );
-      ;
+
     } else {
       return ListView.builder(
           itemCount: my_group_data!.length,
@@ -237,12 +237,12 @@ class _HomeScreenState extends State<HomeScreen> {
                   Navigator.push(
                     context,
                     MaterialPageRoute(
-                      builder: (context) => DiscussionScreen(
+                      builder: (context) => AdminDiscussionScreen(
                           gpId: my_group_data![reverseIndex].id,
                           name: my_group_data![reverseIndex].name,
                           code: my_group_data![reverseIndex].code,
                           description: my_group_data![reverseIndex].description,
-                          created_at: my_group_data![reverseIndex].created_at),
+                          createdAt: my_group_data![reverseIndex].created_at),
                     ),
                   );
                 },
@@ -276,7 +276,7 @@ class _HomeScreenState extends State<HomeScreen> {
                     onPressed: () {
                       deleting_id = my_group_data![reverseIndex].id;
 
-                      _add_Group_Dialog(context, deleting_id);
+                      _our_Pop_up_Dialog(context, deleting_id);
                       // _delete_Group_API(my_group_data![reverseIndex].id);
                     },
                   ),
@@ -288,7 +288,7 @@ class _HomeScreenState extends State<HomeScreen> {
   }
 
   ///Our Pop Dialog
-  void _add_Group_Dialog(BuildContext context, String? gpId) {
+  void _our_Pop_up_Dialog(BuildContext context, String? gpId) {
     showDialog(
         context: context,
         builder: (context) {

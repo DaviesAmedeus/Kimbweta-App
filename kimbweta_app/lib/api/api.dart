@@ -81,7 +81,6 @@ class CallApi {
   evaluateResponseData(res, context, {login = false}) {
 
 
-
     if (res.statusCode == 200) {
       print('--------------------SIGN/SIGN UP STATUS------------------------');
       print('${res.statusCode}');

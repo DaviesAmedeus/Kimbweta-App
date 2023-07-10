@@ -195,7 +195,7 @@ class _SignInScreenState extends State<SignInScreen> {
     } else
     {
       print('------------------------------------------------');
-      print('SIGN RESPONSE IS NULL');
+      print('CHECK IF YOUR ON THE SAME NETWORk');
       print('------------------------------------------------');
     }
 

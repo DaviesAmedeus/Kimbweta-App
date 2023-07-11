@@ -141,7 +141,7 @@ class _HomeScreenState extends State<HomeScreen> {
       return [];
     }
   }
-
+  GlobalKey<FormState> globalFormKey = GlobalKey<FormState>();
   @override
   Widget build(BuildContext context) {
     if (checkStatus == false) {
@@ -296,6 +296,8 @@ class _HomeScreenState extends State<HomeScreen> {
             scrollable: true,
             // title: const Text('Add Group'),
             content: Form(
+              key: globalFormKey,
+
               child: (gpId != null) ? Column(
                 children: [
                   const Text(
@@ -336,6 +338,12 @@ class _HomeScreenState extends State<HomeScreen> {
                   ),
                   CustomInputField(
                     controller: groupNameController,
+                    validator:(input) {
+                      if (input!.isEmpty) {
+                        return "Field should not be empty";
+                      }
+                      return null;
+                    } ,
                     hintText: 'Group Name',
                     textInputAction: TextInputAction.next,
                   ),
@@ -344,6 +352,12 @@ class _HomeScreenState extends State<HomeScreen> {
                   ),
                   CustomInputField(
                     controller: descriptionController,
+                    validator:(input) {
+                      if (input!.isEmpty) {
+                        return "Field should not be empty";
+                      }
+                      return null;
+                    } ,
                     hintText: 'Description',
                     textInputAction: TextInputAction.next,
                   ),
@@ -353,8 +367,14 @@ class _HomeScreenState extends State<HomeScreen> {
                   OurMaterialButton(
                       label: 'Create',
                       onPressed: () {
-                        _create_Group_API();
-                        fetchMyGroupData();
+                        if (validateAndSave()) {
+                          _create_Group_API();
+                          fetchMyGroupData();
+                          setState(() {
+
+                          });
+                        }
+
                         setState(() {
                           _scrollController.animateTo(
                             0.0,
@@ -407,4 +427,16 @@ class _HomeScreenState extends State<HomeScreen> {
       } else {}
     }
   }
+
+  bool validateAndSave() {
+    final form = globalFormKey.currentState;
+    if (form!.validate()) {
+      form.save();
+      return true;
+    }
+    showSnack(context, 'Invalid Input');
+    return false;
+  }
+
+
 }

@@ -5,29 +5,32 @@ import 'package:kimbweta_app/constants/constants.dart';
 
 
 class CustomInputField extends StatelessWidget {
-  const CustomInputField({super.key,
+  CustomInputField({super.key,
     this.textInputAction,
-    this.onSubmitted,
+    // this.onSubmitted,
     this.controller,
     this.keyboardType,
     this.isPassword = false,
     this.hintText,
+    this.validator
   });
 
   final bool isPassword;
   final TextInputAction? textInputAction;
-  final Function(String)? onSubmitted;
+  String? Function(String?)? validator;
+  // final Function(String)? onSubmitted;
   final TextEditingController? controller;
   final TextInputType? keyboardType;
   final String? hintText;
 
   @override
   Widget build(BuildContext context) {
-    return TextField(
+    return TextFormField(
       obscureText: isPassword,
       controller: controller,
+      validator: validator,
       textInputAction: textInputAction,
-      onSubmitted: onSubmitted,
+      // onSubmitted: onSubmitted,
       cursorColor: kMainThemeAppColor,
       style: Theme.of(context).textTheme.bodyMedium,
       decoration: InputDecoration(
@@ -49,6 +52,7 @@ class CustomInputField extends StatelessWidget {
           vertical: 8,
         ),
       ),
+
     );
   }
 }

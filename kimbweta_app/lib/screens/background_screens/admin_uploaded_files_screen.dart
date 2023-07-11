@@ -222,10 +222,19 @@ class _AdminUploadedFilesScreenState extends State<AdminUploadedFilesScreen> {
                     ),
                     onPressed: (){
                       int unStringId = int.parse(group_document_data![index].id);
-                        setState(() {
-                          deleteFileApi(unStringId);
 
-                        });
+
+
+                      setState(() {
+                        deleteFileApi(unStringId);
+                        fetchDocumentData();
+                        LoadingComponent();
+                      });
+
+
+
+
+
                     },
                   ),
                 ),

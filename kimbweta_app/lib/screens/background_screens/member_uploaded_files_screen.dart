@@ -38,6 +38,7 @@ class _MemberUploadedFilesScreenState extends State<MemberUploadedFilesScreen> {
     super.initState();
   }
 
+
   checkLoginStatus() async {
     SharedPreferences sharedPreferences = await SharedPreferences.getInstance();
     if (sharedPreferences.getString("token") == null) {
@@ -136,6 +137,9 @@ class _MemberUploadedFilesScreenState extends State<MemberUploadedFilesScreen> {
       print('Failed to download file. Error code: ${response.statusCode}');
     }
   }
+
+  bool isDowloaded = false;
+
 
   @override
   Widget build(BuildContext context) {
@@ -246,8 +250,12 @@ class _MemberUploadedFilesScreenState extends State<MemberUploadedFilesScreen> {
                      print('ID DATA TYPE>>>  ${unStringId.runtimeType}');
                       _download(context, unStringId, group_document_data![index].name);
 
+                      setState(() {
+                        isDowloaded = true;
+                      });
+
                     },
-                  ),
+                  )
                 ),
               ),
             );
@@ -358,71 +366,7 @@ class _MemberUploadedFilesScreenState extends State<MemberUploadedFilesScreen> {
     String savePath = '${appDir!.path}/$fileName';
     return savePath;
   }
-  // _download(BuildContext context, String fileUrl, String savePath) {
-  //   showDialog(
-  //       context: context,
-  //       builder: (context) {
-  //         return AlertDialog(
-  //           scrollable: true,
-  //           // title: const Text('Join Group'),
-  //           content: Column(
-  //             children: [
-  //               // _contentServices(context),
-  //
-  //               const SizedBox(
-  //                 height: 30,
-  //               ),
-  //
-  //               Row(
-  //                 children: [
-  //                   Expanded(
-  //                     child: MaterialButton(
-  //                       elevation: 0,
-  //                       color: const Color(0xFF44B6AF),
-  //                       height: 50,
-  //                       // minWidth: 500,
-  //                       shape: RoundedRectangleBorder(
-  //                           borderRadius: BorderRadius.circular(12)),
-  //                       onPressed: () async {
-  //                         await downloadFile(fileUrl, savePath);
-  //
-  //                         // _add_client_API();
-  //                         Navigator.pop(context);
-  //                       },
-  //                       child: Text(
-  //                         'Download',
-  //                         style: Theme.of(context).textTheme.labelLarge,
-  //                       ),
-  //                     ),
-  //                   ),
-  //                   const SizedBox(
-  //                     width: 20,
-  //                   ),
-  //                   Expanded(
-  //                     child: MaterialButton(
-  //                       elevation: 0,
-  //                       color: const Color(0xFF44B6AF),
-  //                       height: 50,
-  //                       // minWidth: 500,
-  //                       shape: RoundedRectangleBorder(
-  //                           borderRadius: BorderRadius.circular(12)),
-  //                       onPressed: () {
-  //                         // _add_client_API();
-  //                         Navigator.pop(context);
-  //                       },
-  //                       child: Text(
-  //                         'Dont',
-  //                         style: Theme.of(context).textTheme.labelLarge,
-  //                       ),
-  //                     ),
-  //                   ),
-  //                 ],
-  //               ),
-  //             ],
-  //           ),
-  //         );
-  //       });
-  // }
+
 }
 
 class GroupDocument_Item {

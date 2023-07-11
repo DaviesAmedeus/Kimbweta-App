@@ -4,6 +4,7 @@ import 'package:kimbweta_app/screens/main_screens/join_screen.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
 import '../constants/constants.dart';
+import 'main_screens/archive_screen.dart';
 import 'main_screens/home_screen.dart';
 
 class ScreenTabs extends StatefulWidget {
@@ -39,7 +40,7 @@ class _ScreenTabsState extends State<ScreenTabs> {
   final _tabs= [
     const HomeScreen(),
     const JoinScreen(),
-    const Center(child: Text('Downloads'),),
+     ArchiveScreen(),
   ];
 
   @override

@@ -153,11 +153,28 @@ class CallApi {
     }
   }
 
+  ///DELETE GROUP
   authenticatedDeleteRequest(apiUrl, {context}) async {
     await getToken(context);
     var fullUrl = url + apiUrl;
     try {
       var res = await http.delete(Uri.parse(fullUrl), headers: {
+        'Content-Type': 'application/json',
+        'Vary': 'Accept'
+      });
+      return evaluateResponseData(res, context);
+    } catch (e) {
+      showSnack(context, 'No network');
+      return null;
+    }
+  }
+
+  ///DELETE FILE
+  authenticatedDeleteFileRequest(apiUrl, {context}) async {
+    await getToken(context);
+    var fullUrl = url + apiUrl;
+    try {
+      var res = await http.post(Uri.parse(fullUrl), headers: {
         'Content-Type': 'application/json',
         'Vary': 'Accept'
       });
@@ -198,15 +215,16 @@ class CallApi {
     }
   }
 
-  authenticatedDownloadRequest(data, apiUrl, {context}) async {
+  ///DOWNLOAD
+  authenticatedDownloadRequest(apiUrl, {context}) async {
     var fullUrl = url + apiUrl;
     await getToken(context);
     try {
-      var res = await http.post(
+      var res = await http.get(
           Uri.parse(
             fullUrl,
           ),
-          body: jsonEncode(data),
+          // body: jsonEncode(data),
           headers: _setHeaders());
       return evaluateResponseData(res, context);
     } catch (e) {

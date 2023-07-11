@@ -363,14 +363,7 @@ class _HomeScreenState extends State<HomeScreen> {
                           );
                         });
                         Navigator.pop(context);
-                        // Navigator.push(context, MaterialPageRoute(
-                        //     builder: (context)=> DiscussionScreen(
-                        //         gpId: my_group_data,
-                        //         name:my_group_data![index].name,
-                        //         code:my_group_data![index].code,
-                        //         description:my_group_data![index].description,
-                        //         created_at:my_group_data![index].created_at
-                        //     )));
+
                       })
                 ],
               )

@@ -232,14 +232,19 @@ class _MemberUploadedFilesScreenState extends State<MemberUploadedFilesScreen> {
                       color: kMainThemeAppColor,
                     ),
                     onPressed: () async {
-                      String fileUrl =
-                          await CallApi.media_url + group_document_data![index].name;
-                      String filename = group_document_data![index].name.split("/")[1];
-                      String savePath =
-                          await getExternalStoragePath() + '/$filename';
+                      // String fileUrl =
+                      //     await CallApi.media_url + group_document_data![index].name;
+                      // String filename = group_document_data![index].name.split("/")[1];
+                      // String savePath =
+                      //     await getExternalStoragePath() + '/$filename';
 
 
-                      _download(context, fileUrl, savePath);
+                      // _download(context, fileUrl, savePath);
+
+
+                     int unStringId = int.parse(group_document_data![index].id);
+                     print('ID DATA TYPE>>>  ${unStringId.runtimeType}');
+                      _download(context, unStringId, group_document_data![index].name);
 
                     },
                   ),
@@ -256,7 +261,7 @@ class _MemberUploadedFilesScreenState extends State<MemberUploadedFilesScreen> {
     return directory!.path;
   }
 
-  _download(BuildContext context, String fileUrl, String savePath) {
+  _download(BuildContext context, int fileId, String name) {
     showDialog(
         context: context,
         builder: (context) {
@@ -282,9 +287,10 @@ class _MemberUploadedFilesScreenState extends State<MemberUploadedFilesScreen> {
                         shape: RoundedRectangleBorder(
                             borderRadius: BorderRadius.circular(12)),
                         onPressed: () async {
-                          await downloadFile(fileUrl, savePath);
-
-                          // _add_client_API();
+                         print('NAME:::::: $name');
+                          String fileName = name;
+                          String savePath = await getSavePath(fileName);
+                          _downFileAPI(fileId, savePath);
                           Navigator.pop(context);
                         },
                         child: Text(
@@ -321,6 +327,102 @@ class _MemberUploadedFilesScreenState extends State<MemberUploadedFilesScreen> {
           );
         });
   }
+
+  void _downFileAPI(int id, String savePath) async{
+    var res = await CallApi().authenticatedDownloadRequest('download-file/${id}');
+
+    try{
+      if (res.statusCode == 200) {
+        // Create the file and write the response content to it
+        File file = File(savePath);
+        await file.writeAsBytes(res.bodyBytes);
+        print('File downloaded and saved successfully!');
+      } else {
+        print('Failed to download file. Status code: ${res.statusCode}');
+      }
+    } catch(e) {
+      print(' ------TRY CATCH ERRR---------\n\n\n ${e} \n\n\n----------------------');
+    }
+  }
+
+  Future<String> getSavePath(String fileName) async {
+    Directory? appDir;
+    if (Platform.isAndroid) {
+      appDir = await getExternalStorageDirectory();
+    } else if (Platform.isIOS) {
+      appDir = await getApplicationDocumentsDirectory();
+    } else {
+      throw Exception('Unsupported platform');
+    }
+
+    String savePath = '${appDir!.path}/$fileName';
+    return savePath;
+  }
+  // _download(BuildContext context, String fileUrl, String savePath) {
+  //   showDialog(
+  //       context: context,
+  //       builder: (context) {
+  //         return AlertDialog(
+  //           scrollable: true,
+  //           // title: const Text('Join Group'),
+  //           content: Column(
+  //             children: [
+  //               // _contentServices(context),
+  //
+  //               const SizedBox(
+  //                 height: 30,
+  //               ),
+  //
+  //               Row(
+  //                 children: [
+  //                   Expanded(
+  //                     child: MaterialButton(
+  //                       elevation: 0,
+  //                       color: const Color(0xFF44B6AF),
+  //                       height: 50,
+  //                       // minWidth: 500,
+  //                       shape: RoundedRectangleBorder(
+  //                           borderRadius: BorderRadius.circular(12)),
+  //                       onPressed: () async {
+  //                         await downloadFile(fileUrl, savePath);
+  //
+  //                         // _add_client_API();
+  //                         Navigator.pop(context);
+  //                       },
+  //                       child: Text(
+  //                         'Download',
+  //                         style: Theme.of(context).textTheme.labelLarge,
+  //                       ),
+  //                     ),
+  //                   ),
+  //                   const SizedBox(
+  //                     width: 20,
+  //                   ),
+  //                   Expanded(
+  //                     child: MaterialButton(
+  //                       elevation: 0,
+  //                       color: const Color(0xFF44B6AF),
+  //                       height: 50,
+  //                       // minWidth: 500,
+  //                       shape: RoundedRectangleBorder(
+  //                           borderRadius: BorderRadius.circular(12)),
+  //                       onPressed: () {
+  //                         // _add_client_API();
+  //                         Navigator.pop(context);
+  //                       },
+  //                       child: Text(
+  //                         'Dont',
+  //                         style: Theme.of(context).textTheme.labelLarge,
+  //                       ),
+  //                     ),
+  //                   ),
+  //                 ],
+  //               ),
+  //             ],
+  //           ),
+  //         );
+  //       });
+  // }
 }
 
 class GroupDocument_Item {

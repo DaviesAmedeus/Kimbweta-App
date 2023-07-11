@@ -22,42 +22,6 @@ class _DocumentViewScreenState extends State<DocumentViewScreen> {
   int pages = 0;
   int indexPage = 0;
 
-  // @override
-  // Widget build(BuildContext context) {
-  //   return Scaffold(
-  //     appBar: AppBar(
-  //       // title: Text(widget.docName.toString()),
-  //       title: Text('Document Name'),
-  //
-  //       ///Side Drawer
-  //       actions: [
-  //         IconButton(onPressed: (){}, icon: const Icon(Icons.screen_share)),
-  //         PopupMenuButton(itemBuilder: (BuildContext context)=><PopupMenuEntry>[
-  //
-  //           PopupMenuItem(
-  //             child: ListTile(
-  //               leading: const Icon(Icons.draw_outlined),
-  //               title: const Text('whiteBoard'),
-  //               onTap: (){
-  //                 Navigator.pushNamed(context, WhiteboardScreen.id);
-  //
-  //               },
-  //             ),
-  //           ),
-  //         ],
-  //         )
-  //       ],
-  //     ),
-  //    //  body: Center(
-  //    //    child:
-  //    // widget.file != null
-  //    //      ? SfPdfViewer.file(widget.path!)
-  //    //      : Text('An Error Occured Try Again'),
-  //    //  )
-  //
-  //
-  //   );
-  // }
 
   @override
   Widget build(BuildContext context) {

@@ -221,7 +221,11 @@ class _AdminUploadedFilesScreenState extends State<AdminUploadedFilesScreen> {
                       color: kMainThemeAppColor,
                     ),
                     onPressed: (){
+                      int unStringId = int.parse(group_document_data![index].id);
+                        setState(() {
+                          deleteFileApi(unStringId);
 
+                        });
                     },
                   ),
                 ),
@@ -301,6 +305,32 @@ class _AdminUploadedFilesScreenState extends State<AdminUploadedFilesScreen> {
             ),
           );
         });
+  }
+
+  void deleteFileApi(var fileId) async{
+
+    print('-----------------DATA TYPE-------------------\n\n ${fileId.runtimeType} \n\n---------------------------------');
+
+
+    var res = await CallApi().authenticatedDeleteFileRequest('/delete-file/${fileId}/', context: context);
+    try{
+      if(res.statusCode == 200){
+        print('-----------------STATUS CODE ${res.body}  OK-------------------');
+        if (res != null){
+          print('-----------------DELETE API NOT NULL-------------------');
+        } else{
+          print('-----------------DELETE API IS NULL-------------------');
+        }
+      }else{
+        print('-----------------STATUS CODE ${res.statusCode}  NOT DEFINED-------------------');
+      }
+    }catch(e){
+
+      print('-----------------ERR CODE ${e}  OK-------------------');
+
+    }
+
+
   }
 }
 
